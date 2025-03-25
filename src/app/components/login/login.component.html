@@ -1,0 +1,22 @@
+<p>login works!</p>
+<table>
+    <tbody>
+        <tr>
+            <th>Usuario Id</th>
+            <th>Nombre</th>
+            <th>Email</th>
+          </tr>
+          
+          <tr>
+              @for(user of users; track user.userId){
+                  <td>{{user.userId}}</td>
+                  <td>{{user.username}}</td>
+                  <td>{{user.email}}</td>
+                  <p>Id del usuario es: {{user.userId}}</p>
+              }
+            
+          </tr>
+
+    </tbody>
+    
+  </table>
