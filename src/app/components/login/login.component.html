@@ -1,4 +1,188 @@
-<p>login works!</p>
+
+    
+    <div class="container">
+        
+        <!-- Login Form -->
+        <div class="form-container" [hidden]="isHidenLogin" id="login-form">
+            <div class="form-header">
+                <div class="logo">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h1>Iniciar Sesión</h1>
+                <p>Bienvenido de nuevo, inicia sesión para continuar</p>
+            </div>
+            
+            <form [formGroup]="formLogin" (ngSubmit)="onSubmitLogin()">
+                <div class="input-group">
+                    <label for="login-email">Correo electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" formControlName="email" id="email" placeholder="tu@email.com" required>
+                    </div>
+                    <label style="margin-top: 5px; background-color: #EB5043; padding: 5px; border-radius: 10px;" *ngIf="formLogin.controls['email'].invalid">Ingrese un email valido</label>
+                </div>
+                
+                <div class="input-group">
+                    <div class="label-with-link">
+                        <label for="login-password">Contraseña</label>
+                        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input [type]="tipo" formControlName="password" id="login-password" placeholder="Tu contraseña" required>
+                        <div type="text" class="toggle-password" (click)="showPassword()">
+                            <i class="fa-regular" [ngClass]="{ 'fa-eye': !isText, 'fa-eye-slash': isText }"></i>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="remember-me">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember">
+                        <span class="checkmark"></span>
+                        Recordarme
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Iniciar Sesión</button>
+                
+                <div class="social-login">
+                    <p>O inicia sesión con</p>
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                        </button>
+                        <button type="button" class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button type="button" class="social-btn apple">
+                            <i class="fab fa-apple"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-footer">
+                    <p>¿No tienes una cuenta? <a style="cursor: pointer;" class="switch-form" data-form="register" (click)="changeForms()">Regístrate</a></p>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Register Form -->
+        <div class="form-container" [hidden]="isHidenRegister" id="register-form">
+            <div class="form-header">
+                <div class="logo">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h1>Crear Cuenta</h1>
+                <p>Completa tus datos para registrarte</p>
+            </div>
+            
+            <form [formGroup]="formRegister" (ngSubmit)="dataRegisterForm()">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="first-name">Nombre Completo</label>
+                        <div class="input-with-icon">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="first-name" formControlName="nombreCompleto" form placeholder="Tu nombre" required>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="input-group">
+                        <label for="last-name">Apellido</label>
+                        <div class="input-with-icon">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="last-name" placeholder="Tu apellido" required>
+                        </div>
+                    </div> -->
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-email">Correo electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="register-email" formControlName="emailRegister" placeholder="tu@email.com" required>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="register-password" formControlName="passwordRegister" placeholder="Crea una contraseña" required>
+                        <button type="button" class="toggle-password">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-meter">
+                            <span class="meter-segment active"></span>
+                            <span class="meter-segment"></span>
+                            <span class="meter-segment"></span>
+                            <span class="meter-segment"></span>
+                        </div>
+                        <span class="strength-text">Débil</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="register-password">Género</label>
+                    <div class="radio-container"  style="display: flex; align-items: center; justify-content: space-around; gap: 10px; background-color: #008A9A; padding: 8px; border-radius: 10px;">
+                        <label for="masculino" style="display: flex; align-items: center; margin: 0;">
+                            <input type="radio" id="masculino" formControlName="generoRegister" name="generoRegister" value=0 required>
+                            Masculino
+                        </label>
+                        <label for="femenino" style="display: flex; align-items: center; flex-direction: row; margin: 0;">
+                            <input type="radio" id="femenino" formControlName="generoRegister" name="generoRegister" value=1 required>
+                            Femenino
+                        </label>
+                        
+                    </div>
+                </div>
+                
+                <!-- <div class="input-group">
+                    <label for="confirm-password">Confirmar contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="confirm-password" placeholder="Repite tu contraseña" required>
+                    </div>
+                </div> -->
+                
+                <div class="terms-privacy">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="terms" required>
+                        <span class="checkmark"></span>
+                        Acepto los <a href="#">Términos de servicio</a> y la <a href="#">Política de privacidad</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Crear Cuenta</button>
+                
+                <div class="form-footer">
+                    <p>¿Ya tienes una cuenta? <a (click)="changeForms()" style="cursor: pointer;" class="switch-form" data-form="login">Inicia sesión</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Simple script to toggle between forms
+        document.querySelectorAll('.switch-form').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const formToShow = button.getAttribute('data-form');
+                
+                if (formToShow === 'login') {
+                    document.getElementById('register-form').classList.add('hidden');
+                    document.getElementById('login-form').classList.remove('hidden');
+                } else {
+                    document.getElementById('login-form').classList.add('hidden');
+                    document.getElementById('register-form').classList.remove('hidden');
+                }
+            });
+        });
+    </script> -->
+<!-- <p>login works!</p>
 <table>
     <tbody>
         <tr>
@@ -19,4 +203,4 @@
 
     </tbody>
     
-  </table>
+  </table> -->
