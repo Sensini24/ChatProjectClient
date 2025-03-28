@@ -17,13 +17,15 @@ export class AuthService {
 
   RegisterUser(userdto:UserRegister):Observable<UserRegister>{
     return this.http.post<UserRegister>(this.apiUrlRegister, userdto, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
     })
   }
 
   LoginUser(logindata:UserLogin):Observable<any>{
     return this.http.post<any>(this.apiUrlLogin, logindata,{
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
     })
   }
 }

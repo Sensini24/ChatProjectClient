@@ -1,18 +1,18 @@
 
-
 .chat-container {
     display: flex;
-    width: 90vw;
-    height: 60vw;
+    width: 100%;
+    height: 100%;
     background-color: white;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* Left Sidebar Styles */
 .left-sidebar {
-    width: 400px;
+    width: 300px;
+    min-width: 200px;
     border-right: 1px solid #f0f0f0;
     display: flex;
     flex-direction: column;

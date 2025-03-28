@@ -27,7 +27,7 @@ export class LoginComponent{
   })
 
   
-  tipo:string = 'text';
+  tipo:string = 'password';
   isText:boolean = false;
   isHidenLogin:boolean=false;
   isHidenRegister:boolean = true;
@@ -39,8 +39,8 @@ export class LoginComponent{
   }
 
   onSubmitLogin(){
-    const email = this.formLogin.value.email;
-    const password = this.formLogin.value.password;
+    const email = this.formLogin.value.email?.trim();
+    const password = this.formLogin.value.password?.trim();
     if(!this.formLogin.valid){
       
       if (!email && !password) {
@@ -85,7 +85,7 @@ export class LoginComponent{
 
   showPassword(){
     this.isText = !this.isText;
-    this.isText ? this.tipo = 'password' : this.tipo = 'text'
+    this.isText ? this.tipo = 'text' : this.tipo = 'password'
   }
 
   changeForms(){
