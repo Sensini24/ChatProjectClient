@@ -7,15 +7,16 @@
                 <div class="initials">TS</div>
             </div>
             <div class="status-icons">
-                <div class="icon-circle">
-                    <i class="fa-regular fa-clock"></i>
-                </div>
-                <div class="icon-circle">
+                <!-- <div class="icon-circle">
+                    <i class="fa-regular fa-clock"></i> -->
+                <!-- </div> -->
+                <div class="chat-name">{{username}}</div>
+                <!-- <div class="icon-circle">
                     <i class="fa-regular fa-file"></i>
                 </div>
                 <div class="icon-circle">
                     <i class="fa-regular fa-star"></i>
-                </div>
+                </div> -->
             </div>
             <div class="contacts-section">
                 <div class="contacts-icon">
@@ -45,7 +46,7 @@
                 <button class="add-chat"><i class="fa-solid fa-plus"></i></button>
             </div>
             <div class="chat-list">
-                <div class="chat-item active">
+                <!-- <div class="chat-item active">
                     <div class="chat-avatar">
                         <img src="/placeholder.svg?height=40&width=40" alt="Real estate deals">
                     </div>
@@ -54,47 +55,20 @@
                         <div class="chat-preview">typing...</div>
                     </div>
                     <div class="chat-time">11:15</div>
-                </div>
-                <div class="chat-item">
-                    <div class="chat-avatar">
-                        <img src="/placeholder.svg?height=40&width=40" alt="Kate Johnson">
+                </div> -->
+                @for(contacts of contactsAll; track contacts.userId){
+                    <div class="chat-item">
+                        <div class="chat-avatar">
+                            <div class="initials">{{contacts.username | initials  }}</div>
+                        </div>
+                        <div class="chat-details">
+                            <div class="chat-name">{{contacts.username}}</div>
+                            <div class="chat-preview">Are you going to a house...</div>
+                        </div>
+                        <div class="chat-time">10:55</div>
                     </div>
-                    <div class="chat-details">
-                        <div class="chat-name">Kate Johnson</div>
-                        <div class="chat-preview">I will send the document to...</div>
-                    </div>
-                    <div class="chat-time">11:13</div>
-                </div>
-                <div class="chat-item">
-                    <div class="chat-avatar">
-                        <div class="initials">TS</div>
-                    </div>
-                    <div class="chat-details">
-                        <div class="chat-name">Tamara Shevchenko</div>
-                        <div class="chat-preview">Are you going to a house...</div>
-                    </div>
-                    <div class="chat-time">10:55</div>
-                </div>
-                <div class="chat-item">
-                    <div class="chat-avatar">
-                        <img src="/placeholder.svg?height=40&width=40" alt="Joshua Clarkson">
-                    </div>
-                    <div class="chat-details">
-                        <div class="chat-name">Joshua Clarkson</div>
-                        <div class="chat-preview">I suggest to start, I have...</div>
-                    </div>
-                    <div class="chat-time">10:52</div>
-                </div>
-                <div class="chat-item">
-                    <div class="chat-avatar">
-                        <img src="/placeholder.svg?height=40&width=40" alt="Jeroen Zoet">
-                    </div>
-                    <div class="chat-details">
-                        <div class="chat-name">Jeroen Zoet</div>
-                        <div class="chat-preview">He might be late, a new re...</div>
-                    </div>
-                    <div class="chat-time">14:09</div>
-                </div>
+                }
+                
             </div>
         </div>
     </div>

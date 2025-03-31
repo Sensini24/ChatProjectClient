@@ -14,73 +14,104 @@ export class ChatComponent implements OnInit {
   
 
   // newMessage: {user:string, message:string}
-  messages: { user: string; message: string }[] = [];
+  messages: { user: string; message: string, userId:number, connectionId:string }[] = [];
+  usersConnected:{connectionId:number}[]=[];
+  // userNameLS: string = localStorage.getItem("iduser") || '';
+  connectionId: string ="";
+
+
+  userCurrentTipying:string = "";
+  userIdCurrent:string = ""
 
   private messageSubscription: Subscription | undefined;
-  private connection : HubConnection | undefined;
+  
+
+
   constructor(private messageService:MessageService){
-
-    
-    // this.connection = new HubConnectionBuilder().
-    //                   withUrl("http://localhost:5021/chatHub").
-    //                   build();
-
-
-    // this.connection.on("ReceiveMessage", (user:string, message:string)=> this.recibirMensajes({user, message}))
-
     this.messageSubscription = messageService.messageReceived.subscribe((message)=>{
       if(message){
-        console.log("perro:", message.message, message.user)
+        console.log("perro:", message.message, message.user, message.userId, message.connectionId)
         this.messages.push(message)
+        // localStorage.setItem("iduser", message.user)
       }
     })
 
     
     
+    this.messageService.connectionIdShare$.subscribe((connId)=>{
+      if (connId) {
+        console.log("Connection Id actualizado: ", connId);
+        this.connectionId = connId;
+
+        // Aquí puedes ejecutar la lógica que dependa del connectionId
+      }
+    });
   }
+  
+  
   ngOnInit(){
-    // this.connection?.start()
-    //   .then(_ => {
-    //     console.log('Connection Started');
-    //   }).catch(error => {
-    //     return console.error(error);
-    //   });
+    usersConnected:[]=[]
+
+    this.messageSubscription = this.messageService.userConnected.subscribe((connections: any)=>{
+      if(connections){
+        // console.log(`El usuario con la coneccion ${connections} acaba de conectarse`)
+        
+        for (const userId in connections) {
+          if(userId !== "0" ){
+            const userInfoList: string[] = connections[userId];
+            const connection = userInfoList[0];
+            const username = userInfoList[1];
+            console.log(`El usuario con ID ${userId}, conexión ${connection} y nombre ${username} acaba de conectarse`);
+            // Podrías querer almacenar esta información en tu componente Angular
+
+            if(connection == this.connectionId){
+              this.userCurrentTipying = username;
+              this.userIdCurrent = userId
+            }
+          }
+        }
+        for (const userId in connections) {
+          const userInfoList: string[] = connections;
+          console.log("Usuarios CONECTADOS: ", userInfoList)
+        }
+
+        
+      }
+    })
+
+    this.messageSubscription = this.messageService.userDisconnected.subscribe((disconections:any)=>{
+      console.log("Usuario desconectado: ", disconections)
+    })
 
     
   }
 
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+  }
   datos:string = "";
-  valorInput(event:Event){
-    const input = event.target as HTMLInputElement;
-    this.datos = input.value;
-  }
-
-  // recibirMensajes(message:{user:string, message:string}){
-  //   this.messages.push(message)
-  // }
-
-  
-  // user:string = "Brandon"
-  // message:string = "";
-  
-
-  // dato(){
-  //   this.message = this.datos;
-  //   console.log("hola: ", this.message);
-  //   this.connection?.invoke('SendMessageToAll', this.user, this.message)
-  //     .then(_=>console.log("Mensaje enviado: ", this.user, this.message))
-    
-  // }
-
-
+  isTyping:boolean = true;
   //! VERSION SERVICE
   user:string = "Brandon"
   message:string = "";
-  dato(){
-    this.message = this.datos
+  sendMessageInput(inputelement:HTMLInputElement){
+    // this.message = this.datos
+    this.message = inputelement.value;
     this.messageService.sendMessage(this.message)
-    // this.messageService.sendMessage("Brandon",this.message)
-    
+    inputelement.value = ""
+    this.isTyping = true
+  }
+
+
+  showTyping(event:Event){
+    console.log("tipeando: ", (event.target as HTMLInputElement).value)
+
+    const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
+
+    // this.isTyping = false
+    console.log("this.isTyping: ", this.isTyping)
   }
 
   

@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/IUser';
 import { UserRegister } from '../../interfaces/IUserRegister';
 import { UserLogin } from '../../interfaces/IUserLogin';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -14,13 +15,16 @@ import { UserLogin } from '../../interfaces/IUserLogin';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent{
+export class LoginComponent implements OnInit{
 
+  
   constructor(private authService:AuthService){}
 
-  
-  
-  
+  ngOnInit(): void {
+    
+  }
+
+
   formLogin = new FormGroup({
     email : new FormControl("", [Validators.email, Validators.required]),
     password : new FormControl("", Validators.required)
@@ -126,6 +130,9 @@ export class LoginComponent{
         next: data => console.log("Registro exitoso", data),
         error: err => console.log("Error en la solicitud", err.error) // <-- Ver detalles del error
       });
+
+
+      
     }else{
       console.log("Error de guardado de usuario")
     }
@@ -133,20 +140,4 @@ export class LoginComponent{
   }
 
 
-  
-
 }
-
-// export class LoginComponent implements OnInit {
-
-//   // users:User[]= []
-
-//   // constructor(private userService:UserService){}
-//   // ngOnInit(): void {
-//   //   this.userService.GetUsers().subscribe(data=>{
-//   //     this.users = data;
-//   //     // console.log(this.users);
-//   //     console.log(this.users, typeof this.users[0].userId);
-//   //   })
-//   // }
-// }

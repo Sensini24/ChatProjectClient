@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="chat-messages">
-        <div class="message-group">
+        <!-- <div class="message-group">
             <div class="message-time">Kate Johnson 11:04 AM</div>
             <div class="message">
                 <div class="message-avatar">
@@ -59,7 +59,7 @@
                     <p>Robert? 👋</p>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="message-group">
             <div class="message-time">You, 11:08 AM</div>
             <div class="message outgoing">
@@ -86,33 +86,47 @@
                 </div>
             </div>
         </div>
-        <div class="message-group">
-            <div class="typing-indicator">
-                <span>Robert is typing</span>
-            </div>
-        </div>
+        
 
         @for(message of messages; track message.message){
-            <div class="message-group">
-                <div class="message-time">{{message.user}}</div>
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                    </div>
-                    <div class="message-content">
-                        <p>{{message.message}}</p>
+            @if(message.connectionId === connectionId){
+                <div class="message-group">
+                    <div class="message-time">You, 11:08 AM</div>
+                    <div class="message outgoing">
+                        <div class="message-content">
+                            <p>{{message.message}}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }@else {
+                <div class="message-group">
+                    <div class="message-time">{{message.user}}</div>
+                    <div class="message">
+                        <div class="message-avatar">
+                            <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                        </div>
+                        <div class="message-content">
+                            <p>{{message.message}}</p>
+                        </div>
+                    </div>
+                </div>
+
+            }
         }
+
+        <div class="message-group" [hidden]="isTyping">
+            <div class="typing-indicator">
+                <span >{{userCurrentTipying}} is typing</span>
+            </div>
+        </div>
         
     </div>
     <div class="chat-input">
-        <input type="text" placeholder="Write your message..." (input)="valorInput($event)">
+        <input type="text" placeholder="Write your message..." #inputelement  (input)="showTyping($event)">
         <div class="input-actions">
             <button class="emoji-btn"><i class="fa-regular fa-face-smile"></i></button>
             <button class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
-            <button class="send-btn" (click)="dato()"><i class="fa-solid fa-paper-plane"></i></button>
+            <button class="send-btn" (click)="sendMessageInput(inputelement)"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
