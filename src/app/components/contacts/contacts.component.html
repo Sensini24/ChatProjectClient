@@ -57,7 +57,7 @@
                     <div class="chat-time">11:15</div>
                 </div> -->
                 @for(contacts of contactsAll; track contacts.userId){
-                    <div class="chat-item">
+                    <div class="chat-item" (click)="createChat(contacts.userId)">
                         <div class="chat-avatar">
                             <div class="initials">{{contacts.username | initials  }}</div>
                         </div>
@@ -73,6 +73,6 @@
         </div>
     </div>
 
-    <app-chat></app-chat>
+    <app-chat [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent"></app-chat>
 </div>
 

@@ -25,7 +25,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   username:string = "";
   contactsAll:User[] = [];
+ 
 
+  childIdContact:number = 0
+  childIdUserCurrent:number = 0
 
   constructor(private userService: UserService,private authService:AuthService){
   }
@@ -86,6 +89,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   traerInfoUser(){
     console.log("USUARIO GUARADDO: ", this.user)
+  }
+
+  createChat(contactId:number){
+    this.childIdContact = contactId;
+    this.childIdUserCurrent = this.user?.userId ?? 0
+    console.log("Id contact: ", this.childIdContact, "Id user current: ", this.childIdUserCurrent)
   }
   
 }

@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../../services/message.service';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { SignalMessageService } from '../../signalsService/signal-message.service';
+import { Chat, Message } from '../../interfaces/IChat';
 
 @Component({
   selector: 'app-chat',
@@ -10,8 +12,15 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
   styleUrl: './chat.component.css'
 })
 export class ChatComponent implements OnInit {
+  @Input() childIdContact: number = 0;
+  @Input() childIdUserCurrent:number = 0
 
-  
+  private chatsSuscription: Subscription | undefined;
+  datos:string = "";
+  isTyping:boolean = true;
+  //! VERSION SERVICE
+  user:string = "Brandon"
+  message:string = "";
 
   // newMessage: {user:string, message:string}
   messages: { user: string; message: string, userId:number, connectionId:string }[] = [];
@@ -22,13 +31,14 @@ export class ChatComponent implements OnInit {
 
   userCurrentTipying:string = "";
   userIdCurrent:string = ""
+  nameChat:string = ""
 
   private messageSubscription: Subscription | undefined;
   
 
 
-  constructor(private messageService:MessageService){
-    this.messageSubscription = messageService.messageReceived.subscribe((message)=>{
+  constructor(private messageService:MessageService, private signalMessageService: SignalMessageService){
+    this.messageSubscription = signalMessageService.messageReceived.subscribe((message)=>{
       if(message){
         console.log("perro:", message.message, message.user, message.userId, message.connectionId)
         this.messages.push(message)
@@ -38,7 +48,7 @@ export class ChatComponent implements OnInit {
 
     
     
-    this.messageService.connectionIdShare$.subscribe((connId)=>{
+    this.signalMessageService.connectionIdShare$.subscribe((connId)=>{
       if (connId) {
         console.log("Connection Id actualizado: ", connId);
         this.connectionId = connId;
@@ -52,7 +62,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(){
     usersConnected:[]=[]
 
-    this.messageSubscription = this.messageService.userConnected.subscribe((connections: any)=>{
+    this.messageSubscription = this.signalMessageService.userConnected.subscribe((connections: any)=>{
       if(connections){
         // console.log(`El usuario con la coneccion ${connections} acaba de conectarse`)
         
@@ -79,29 +89,57 @@ export class ChatComponent implements OnInit {
       }
     })
 
-    this.messageSubscription = this.messageService.userDisconnected.subscribe((disconections:any)=>{
+    this.messageSubscription = this.signalMessageService.userDisconnected.subscribe((disconections:any)=>{
       console.log("Usuario desconectado: ", disconections)
     })
 
-    
   }
 
   ngOnDestroy(): void {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
+
+    if (this.chatsSuscription) {
+      this.chatsSuscription.unsubscribe();
+    }
   }
-  datos:string = "";
-  isTyping:boolean = true;
-  //! VERSION SERVICE
-  user:string = "Brandon"
-  message:string = "";
+  
+  
+  // chat:Chat = {
+  //   NameChat: "",
+    
+  // }
+  arrayIds: string[] = []
+  
   sendMessageInput(inputelement:HTMLInputElement){
-    // this.message = this.datos
+
+    //Envio de mensajes en chat en tiempo real
     this.message = inputelement.value;
-    this.messageService.sendMessage(this.message)
+    this.signalMessageService.sendMessage(this.message)
     inputelement.value = ""
     this.isTyping = true
+    
+    //Creacion de chat, guardado de participantes y guardado de mensaje en base de datos.
+    this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
+    this.nameChat = this.arrayIds.sort().join("-")
+
+    const messagesChat: { UserId: number; MessageText: string }[] = [];
+    const chatParticipants : {UserId:number}[] = []
+    messagesChat.push({UserId:this.childIdContact, MessageText:this.message})
+    chatParticipants.push({UserId:this.childIdContact})
+    chatParticipants.push({UserId:this.childIdUserCurrent})
+    const chat: Chat = {
+      NameChat: this.nameChat,
+      Messages : messagesChat,
+      ChatParticipants: chatParticipants
+    }
+    console.log("Id contact: ", this.childIdContact, "Id user current: ", this.childIdUserCurrent)
+    console.log("Chat completo: ", chat)
+
+    this.chatsSuscription =  this.messageService.SendMessage(chat).subscribe((data:any)=>{
+      console.log("Mensaje de guardado de chats y mensajes: ", data)
+    });
   }
 
 
