@@ -1,134 +1,141 @@
-<div class="main-chat">
-    <div class="chat-header">
-        <div class="chat-tabs">
-            <div class="tab active">
-                <i class="fa-regular fa-comment"></i>
-                <span>Chat</span>
-            </div>
-            <div class="group-name">Group Chat</div>
-            <div class="header-actions">
-                <button class="messages-btn active">Messages</button>
-                <button class="participants-btn">Participants</button>
-            </div>
-        </div>
-        <div class="shared-files-tab">
-            <i class="fa-regular fa-folder"></i>
-            <span>Shared files</span>
-        </div>
+
+<div class="main-chat" >
+
+    <div class="saludo-container"  style="width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;" *ngIf="isShowPresentationChat">
+        <h1>
+            Haz click en un contacto para poder ver tus mensajes
+        </h1>
     </div>
-    <div class="chat-messages">
-        <!-- <div class="message-group">
-            <div class="message-time">Kate Johnson 11:04 AM</div>
-            <div class="message">
-                <div class="message-avatar">
-                    <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+    <div class="chat-container" style="width: 100%; height: 100vh;" *ngIf="isShowMessagesContact">
+        <div class="chat-header" >
+            <div class="chat-tabs">
+                <div class="tab active">
+                    <i class="fa-regular fa-comment"></i>
+                    <span>Chat</span>
                 </div>
-                <div class="message-content">
-                    <p>Hi everyone, let's start the call soon 👋</p>
+                <div class="group-name">Group Chat</div>
+                <div class="header-actions">
+                    <button class="messages-btn active">Messages</button>
+                    <button class="participants-btn">Participants</button>
                 </div>
+            </div>
+            <div class="shared-files-tab">
+                <i class="fa-regular fa-folder"></i>
+                <span>Shared files</span>
             </div>
         </div>
-        <div class="message-group">
-            <div class="message-time">Kate Johnson 11:04 AM</div>
-            <div class="message">
-                <div class="message-avatar">
-                    <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                </div>
-                <div class="message-content">
-                    <p>Recently I saw properties in a great location that I did not pay attention to before 😊</p>
-                </div>
-            </div>
-        </div>
-        <div class="message-group">
-            <div class="message-time">Kate Smith 11:06 AM</div>
-            <div class="message">
-                <div class="message-avatar">
-                    <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                </div>
-                <div class="message-content">
-                    <p>Ooo, why don't you say something more</p>
-                </div>
-            </div>
-        </div>
-        <div class="message-group">
-            <div class="message">
-                <div class="message-avatar">
-                    <img src="/placeholder.svg?height=36&width=36" alt="Robert">
-                </div>
-                <div class="message-content">
-                    <p>Robert? 👋</p>
-                </div>
-            </div>
-        </div> -->
-        <div class="message-group">
-            <div class="message-time">You, 11:08 AM</div>
-            <div class="message outgoing">
-                <div class="message-content">
-                    <p>He created an atmosphere of mystery 🧐</p>
-                </div>
-            </div>
-        </div>
-        <div class="message-group">
-            <div class="message outgoing">
-                <div class="message-content reactions">
-                    <p>😎 😎</p>
-                </div>
-            </div>
-        </div>
-        <div class="message-group">
-            <div class="message-time">Kate Smith 11:09 AM</div>
-            <div class="message">
-                <div class="message-avatar">
-                    <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                </div>
-                <div class="message-content">
-                    <p>Robert, don't be like that and say something more :) 👋</p>
-                </div>
-            </div>
-        </div>
-        
-
-        @for(message of messages; track message.message){
-            @if(message.connectionId === connectionId){
-                <div class="message-group">
-                    <div class="message-time">You, 11:08 AM</div>
-                    <div class="message outgoing">
-                        <div class="message-content">
-                            <p>{{message.message}}</p>
-                        </div>
+        <div class="chat-messages">
+            <!-- <div class="message-group">
+                <div class="message-time">Kate Johnson 11:04 AM</div>
+                <div class="message">
+                    <div class="message-avatar">
+                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                    </div>
+                    <div class="message-content">
+                        <p>Hi everyone, let's start the call soon 👋</p>
                     </div>
                 </div>
-            }@else {
-                <div class="message-group">
-                    <div class="message-time">{{message.user}}</div>
-                    <div class="message">
-                        <div class="message-avatar">
-                            <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                        </div>
-                        <div class="message-content">
-                            <p>{{message.message}}</p>
-                        </div>
+            </div>
+            <div class="message-group">
+                <div class="message-time">Kate Johnson 11:04 AM</div>
+                <div class="message">
+                    <div class="message-avatar">
+                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                    </div>
+                    <div class="message-content">
+                        <p>Recently I saw properties in a great location that I did not pay attention to before 😊</p>
                     </div>
                 </div>
-
+            </div>
+            <div class="message-group">
+                <div class="message-time">Kate Smith 11:06 AM</div>
+                <div class="message">
+                    <div class="message-avatar">
+                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                    </div>
+                    <div class="message-content">
+                        <p>Ooo, why don't you say something more</p>
+                    </div>
+                </div>
+            </div>
+            <div class="message-group">
+                <div class="message">
+                    <div class="message-avatar">
+                        <img src="/placeholder.svg?height=36&width=36" alt="Robert">
+                    </div>
+                    <div class="message-content">
+                        <p>Robert? 👋</p>
+                    </div>
+                </div>
+            </div> -->
+            <!-- <div class="message-group">
+                <div class="message-time">You, 11:08 AM</div>
+                <div class="message outgoing">
+                    <div class="message-content">
+                        <p>He created an atmosphere of mystery 🧐</p>
+                    </div>
+                </div>
+            </div>
+            <div class="message-group">
+                <div class="message outgoing">
+                    <div class="message-content reactions">
+                        <p>😎 😎</p>
+                    </div>
+                </div>
+            </div>
+            <div class="message-group">
+                <div class="message-time">Kate Smith 11:09 AM</div>
+                <div class="message">
+                    <div class="message-avatar">
+                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                    </div>
+                    <div class="message-content">
+                        <p>Robert, don't be like that and say something more :) 👋</p>
+                    </div>
+                </div>
+            </div> -->
+            
+    
+            @for(message of privateMessages; track message.message){
+                @if(message.connectionId === connectionId){
+                    <div class="message-group">
+                        <div class="message-time">You, 11:08 AM</div>
+                        <div class="message outgoing">
+                            <div class="message-content">
+                                <p>{{message.message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                }@else {
+                    <div class="message-group">
+                        <div class="message-time">{{message.user}}</div>
+                        <div class="message">
+                            <div class="message-avatar">
+                                <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                            </div>
+                            <div class="message-content">
+                                <p>{{message.message}}</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                }
             }
-        }
-
-        <div class="message-group" [hidden]="isTyping">
-            <div class="typing-indicator">
-                <span >{{userCurrentTipying}} is typing</span>
+    
+            <div class="message-group" [hidden]="isTyping">
+                <div class="typing-indicator">
+                    <span >{{userCurrentTipying}} is typing</span>
+                </div>
+            </div>
+            
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Write your message..." #inputelement  (input)="showTyping($event)">
+            <div class="input-actions">
+                <button class="emoji-btn"><i class="fa-regular fa-face-smile"></i></button>
+                <button class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
+                <button class="send-btn" (click)="sendMessageInput(inputelement)"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        
     </div>
-    <div class="chat-input">
-        <input type="text" placeholder="Write your message..." #inputelement  (input)="showTyping($event)">
-        <div class="input-actions">
-            <button class="emoji-btn"><i class="fa-regular fa-face-smile"></i></button>
-            <button class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
-            <button class="send-btn" (click)="sendMessageInput(inputelement)"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-
 </div>

@@ -5,6 +5,8 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { ApiResponse, manyApiResponse, User } from '../../interfaces/IUser';
 import { InitialsPipe } from '../../pipes/initials.pipe';
+import { MessageService } from '../../services/message.service';
+import { ApiResponseChat } from '../../interfaces/IChat';
 
 @Component({
   selector: 'app-contacts',
@@ -20,6 +22,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private usersSubscription : Subscription | undefined
 
   private messageSubscription: Subscription | undefined;
+  private receivePrivateChats : Subscription | undefined;
+  
   userId:number = 0
   user:User | undefined
 
@@ -29,30 +33,35 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   childIdContact:number = 0
   childIdUserCurrent:number = 0
+  childUserNameCurrent:string = ""
 
-  constructor(private userService: UserService,private authService:AuthService){
+
+  isShowPresentationChat:boolean = true
+  isShowMessagesContact:boolean = false
+
+
+  arrayIds: string[] = []
+  nameChat:string = ""
+
+  constructor(private userService: UserService,private authService:AuthService, private messageService:MessageService){
   }
 
   ngOnInit(): void {
     const userIdService = this.authService.getUser();
     this.userId = parseInt(userIdService?.id ?? '0');
+    this.userService.ObtenerUser().subscribe()
 
-
-    this.userSubscription = this.userService.ObtenerUser(this.userId).subscribe((data:ApiResponse)=>{
-      this.user = {
-        userId : data.userdto.userId,
-        username : data.userdto.username,
-        email : data.userdto.email,
-        gender : this.obtenerGenero(Number(data.userdto.gender))
+    this.userSubscription = this.userService.$user.subscribe((data: ApiResponse | null) => {
+      if (data) {
+        // console.log("Usuario obtenido: ", data)
+        // console.log("Usuario nuevo: ", this.user)
+        this.user = data.userdto
+        this.username = this.user?.username ?? "";
+        console.log("nombre para perfil: ", this.username);
+      } else {
+        console.log("No user data available");
       }
-      // console.log("Usuario obtenido: ", data)
-      // console.log("Usuario nuevo: ", this.user)
-
-      this.username = this.user?.username ?? ""
-      console.log("nombre para perfil: ", this.username)
-
-
-    })
+    });
 
     this.usersSubscription = this.userService.GetAllUsers().subscribe((data:manyApiResponse)=>{
       console.log("Todos los usuario actuales: ", data.userdto);
@@ -66,7 +75,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         // console.log("Todos los usuario actuales2 : ", this.contactsAll);
     })
         
-    // this.getInitials()
   }
 
   ngOnDestroy(): void {
@@ -83,7 +91,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   obtenerGenero(numero:number):string{
     const generos = ["Masculino", "Femenino", "Otros"]
-
     return generos[numero] ?? "Desconocido"
   }
 
@@ -94,7 +101,28 @@ export class ContactsComponent implements OnInit, OnDestroy {
   createChat(contactId:number){
     this.childIdContact = contactId;
     this.childIdUserCurrent = this.user?.userId ?? 0
-    console.log("Id contact: ", this.childIdContact, "Id user current: ", this.childIdUserCurrent)
+    this.childUserNameCurrent = this.user?.username || ""
+
+    this.isShowMessagesContact = true;
+    this.isShowPresentationChat = false;
+    
+    // this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
+    // this.nameChat = this.arrayIds.sort().join("-")
+
+    // this.mes
+    console.log("Id contact: ", this.childIdContact, "Id user current: ",this.childIdUserCurrent, "Username: ", this.childUserNameCurrent, "IsShow meesage: ", this.isShowMessagesContact, "IsShowPresentation: ", this.isShowPresentationChat)
+
+
+    this.receivePrivateChats = this.messageService.GetPrivateChat(this.getChatName(), 10).subscribe((data:ApiResponseChat)=>{
+      console.log(`Chats de chats privado ${this.getChatName} obtenidos: `, data)
+    })
   }
-  
+
+
+  getChatName():string{
+    this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
+    this.nameChat = this.arrayIds.sort().join("-")
+
+    return this.nameChat
+  }
 }
