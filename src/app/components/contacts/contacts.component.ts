@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatComponent } from '../chat/chat.component';
-import { Observable, Subscription } from 'rxjs';
+import { catchError, map, Observable, of, Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { ApiResponse, manyApiResponse, User } from '../../interfaces/IUser';
@@ -43,15 +43,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
   arrayIds: string[] = []
   nameChat:string = ""
 
+  user$: Observable<ApiResponse> | undefined;
   constructor(private userService: UserService,private authService:AuthService, private messageService:MessageService){
   }
 
   ngOnInit(): void {
-    const userIdService = this.authService.getUser();
-    this.userId = parseInt(userIdService?.id ?? '0');
-    this.userService.ObtenerUser().subscribe()
-
-    this.userSubscription = this.userService.$user.subscribe((data: ApiResponse | null) => {
+    this.userSubscription = this.userService.$userCurrent.subscribe((data: ApiResponse | null) => {
       if (data) {
         // console.log("Usuario obtenido: ", data)
         // console.log("Usuario nuevo: ", this.user)
@@ -63,11 +60,16 @@ export class ContactsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.usersSubscription = this.userService.GetAllUsers().subscribe((data:manyApiResponse)=>{
-      console.log("Todos los usuario actuales: ", data.userdto);
-      for (const user of data.userdto) {
-        this.contactsAll?.push(user);
+    // this.user$ = this.userService.ObtenerUsuarioActual()
+
+    this.usersSubscription = this.userService.$users.subscribe((data:manyApiResponse | null)=>{
+      console.log("Todos los usuario actuales: ", data?.userdto);
+      if(data?.userdto){
+        for (const user of data.userdto) {
+          this.contactsAll?.push(user);
+        }
       }
+      
     
       // Agregar todos los usuarios correctamente usando spread operator o concat
       // this.contactsAll.push(...data.userdto);
@@ -76,6 +78,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
     })
         
   }
+
+  
 
   ngOnDestroy(): void {
     if (this.userSubscription) {
@@ -110,12 +114,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
     // this.nameChat = this.arrayIds.sort().join("-")
 
     // this.mes
-    console.log("Id contact: ", this.childIdContact, "Id user current: ",this.childIdUserCurrent, "Username: ", this.childUserNameCurrent, "IsShow meesage: ", this.isShowMessagesContact, "IsShowPresentation: ", this.isShowPresentationChat)
+    // console.log("Id contact: ", this.childIdContact, "Id user current: ",this.childIdUserCurrent, "Username: ", this.childUserNameCurrent, "IsShow meesage: ", this.isShowMessagesContact, "IsShowPresentation: ", this.isShowPresentationChat)
 
-
-    this.receivePrivateChats = this.messageService.GetPrivateChat(this.getChatName(), 10).subscribe((data:ApiResponseChat)=>{
-      console.log(`Chats de chats privado ${this.getChatName} obtenidos: `, data)
-    })
   }
 
 

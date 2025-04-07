@@ -20,11 +20,11 @@ export interface ChatParticipants{
 export interface ApiResponseChat{
     success:boolean,
     message:string,
-    chat:ChatGet
+    chatDto:ChatGet
 }
 export interface ChatGet{
-    NameChat :string,
-    Messages : MessageGet[],
+    nameChat :string,
+    messages : MessageGet[],
     ChatParticipants : ChatParticipantsGet[]
 }
 

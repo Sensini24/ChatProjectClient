@@ -15,6 +15,7 @@ export class AuthService {
   private connection : HubConnection | undefined;
   userIdReceived = new Subject<number>;
   userConnected = new Subject<any>
+  userid:string = ""
   
   constructor(private http: HttpClient) {
     this.startConnection() 
@@ -53,8 +54,13 @@ export class AuthService {
     })
 
     this.connection.on("ReceiveUserId", (userId:string)=>{
+
+      if(localStorage.getItem('userId')){
+        localStorage.removeItem("userId");
+      }
       this.setUser(userId)
       console.log("Id enviado a localstorage: ", userId)
+      this.userid = userId
       // this.userIdReceived.next(userId);
     })
 
@@ -71,7 +77,7 @@ export class AuthService {
 
   getUser() {
     return {
-      id:  localStorage.getItem('userId'),
+      id: localStorage.getItem('userId')
     };
   }
 

@@ -31,8 +31,8 @@ export class ChatComponent implements OnInit {
 
   // newMessage: {user:string, message:string}
   messages: { user: string; message: string, userId:number, connectionId:string, date:Date }[] = [];
-  privateMessages :{ message: string; user: string; userId:number, connectionId:string, date:Date }[]  = [];
-
+  // privateMessages :{ message: string; user: string; userId:number, connectionId:string, date:Date }[]  = [];
+  privateMessages :any[]  = [];
   usersConnected:[] = []
   
   // userNameLS: string = localStorage.getItem("iduser") || '';
@@ -40,9 +40,10 @@ export class ChatComponent implements OnInit {
 
 
   userCurrentTipying:string = "";
-  userIdCurrent:string = ""
+  userIdCurrent:number = 0
   nameChat:string = ""
   username:string = ""
+  contactName:string = ""
 
   private signalConnectionIdCurrentUser : Subscription | undefined
   private sendchatsSuscription: Subscription | undefined;
@@ -51,6 +52,7 @@ export class ChatComponent implements OnInit {
   private signalUserConnectedSubscription : Subscription | undefined;
   private currentUserSubscription: Subscription | undefined;
   private signalUserDisconnectedSubscription: Subscription | undefined;
+  private receivePrivateChats : Subscription | undefined;
   
 
   constructor(private messageService:MessageService, private userService:UserService, private signalMessageService: SignalMessageService){
@@ -81,17 +83,25 @@ export class ChatComponent implements OnInit {
       }
     })
 
-      this.currentUserSubscription = this.userService.$user.subscribe((data: ApiResponse | null) => {
+      this.currentUserSubscription = this.userService.$userCurrent.subscribe((data: ApiResponse | null) => {
         if (data) {
           // console.log("Usuario obtenido: ", data)
           // console.log("Usuario nuevo: ", this.user)
           this.user = data.userdto
           this.username = this.user?.username ?? "";
+          this.userIdCurrent  = this.user?.userId
           console.log("nombre para perfil: ", this.username);
         } else {
           console.log("No user data available");
         }
       });
+
+
+      // this.receivePrivateChats = this.messageService.$privateChat.subscribe((data:ApiResponseChat)=>{
+      //   console.log(`Chats de chats privado ${this.getChatName} obtenidos: `, data)
+      // })
+
+    
   }
   
   
@@ -114,7 +124,32 @@ export class ChatComponent implements OnInit {
       console.log("Usuario desconectado: ", disconections)
     })
 
-    
+    //? SE SUSCRIBE ANTE CUALQUIER CAMBIO.
+
+      this.receivePrivateChats = this.messageService.$privateChat.subscribe((data: any | null) => {
+        console.log(`Chats de chats privado ${this.getChatName()} obtenidos: `, data);
+        const privateMessagesServer = data?.chatDto.messages
+        this.privateMessages = []
+
+          if (privateMessagesServer) {
+            privateMessagesServer.forEach((element:any) => {
+              this.privateMessages.push(element);
+            });
+            // this.contactName = data.chatDto.ChatParticipants
+            console.log("Private messages en array: ", this.privateMessages)
+          }
+        
+        
+        // Aquí puedes procesar los datos de los mensajes (data)
+      });
+  }
+
+  ngOnChanges(): void {
+    //? EN CASO DE CAMBIO DE PARAMETROS PARA OBTENER EL CHAT CON UN NOMBRE DE CHAT
+    if (this.childIdContact && this.childIdUserCurrent) {
+      const chatName = this.getChatName();
+      this.messageService.loadPrivateChat(chatName, 150);
+    }
   }
 
   ngOnDestroy(): void {
@@ -146,10 +181,14 @@ export class ChatComponent implements OnInit {
       this.signalUserDisconnectedSubscription.unsubscribe()
     }
 
+    if(this.receivePrivateChats){
+      this.receivePrivateChats.unsubscribe()
+    }
   }
   
   
   arrayIds: string[] = []
+  // messageCachéModel: { userId: number, userName:string, messageText:string,  } = { userId: 0 }
   
   sendMessageInput(inputelement:HTMLInputElement){
 
@@ -162,7 +201,8 @@ export class ChatComponent implements OnInit {
     }else{
       console.log("nO HAY CONECCION CON EL CONTACTO, PERO SI SE ENVIAR MENSAJE AL ARRAY")
 
-      this.privateMessages.push({ message: this.message, user: this.username, userId:this.childIdUserCurrent, connectionId:"", date:new Date() })
+      this.privateMessages.push({ messageText: this.message, userName
+        : this.username, userId:this.childIdUserCurrent, connectionId:"", date:new Date() })
     }
     // this.signalMessageService.sendMessage(this.message)
     
@@ -170,9 +210,9 @@ export class ChatComponent implements OnInit {
     this.isTyping = true
     
    
-    console.log("Id contact: ", this.childIdContact, "Id user current: ", this.childIdUserCurrent)
-    console.log("Usuario conectados para sabe su connectionid por su id: ", this.usersConnected[this.childIdUserCurrent])
-    console.log("Usuario contacto para sabe su connectionid por su id: ", this.usersConnected[this.childIdContact])
+    // console.log("Id contact: ", this.childIdContact, "Id user current: ", this.childIdUserCurrent)
+    // console.log("Usuario conectados para sabe su connectionid por su id: ", this.usersConnected[this.childIdUserCurrent])
+    // console.log("Usuario contacto para sabe su connectionid por su id: ", this.usersConnected[this.childIdContact])
     console.log("Mensaje almacenado: ", this.privateMessages)
 
     //? Creacion de chat, guardado de participantes y guardado de mensaje en base de datos.
@@ -187,7 +227,7 @@ export class ChatComponent implements OnInit {
     const messagesChat: { UserId: number; MessageText: string }[] = [];
     const chatParticipants : {UserId:number}[] = []
 
-    messagesChat.push({UserId:this.childIdContact, MessageText:this.message})
+    messagesChat.push({UserId:this.childIdUserCurrent, MessageText:this.message})
     chatParticipants.push({UserId:this.childIdContact})
     chatParticipants.push({UserId:this.childIdUserCurrent})
 
@@ -201,6 +241,11 @@ export class ChatComponent implements OnInit {
     this.sendchatsSuscription =  this.messageService.SendMessage(chat).subscribe((data:any)=>{
       console.log("Mensaje de guardado de chats y mensajes: ", data)
     });
+
+    //? Guardado de meesages en tiempo real denntro de cache.
+    // this.messageCachéModel = { userId: this.childIdUserCurrent }
+    
+    this.messageService.addMessageToCache(this.getChatName(), { messageText: this.message, userName: this.username, userId:this.childIdUserCurrent, connectionId:"", date:new Date() });
   }
 
   
@@ -208,7 +253,7 @@ export class ChatComponent implements OnInit {
     console.log("tipeando: ", (event.target as HTMLInputElement).value)
 
     const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
-    console.log("this.isTyping: ", this.isTyping)
+    // console.log("this.isTyping: ", this.isTyping)
   }
 
   getChatName():string{

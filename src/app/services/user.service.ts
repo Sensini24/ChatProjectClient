@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { ApiResponse, manyApiResponse, User } from '../interfaces/IUser';
 import { Subject } from '@microsoft/signalr';
 import { AuthService } from './auth.service';
@@ -14,13 +14,19 @@ export class UserService {
 
   private usersSubject = new BehaviorSubject<manyApiResponse | null>(null);
   public $users = this.usersSubject.asObservable()
-  user:User | undefined
 
+  private userCurrentSubject = new BehaviorSubject<ApiResponse | null>(null);
+  public $userCurrent = this.userCurrentSubject.asObservable()
+  user:User | undefined
+  userCurrent:User | undefined
   constructor(private http:HttpClient, private authService: AuthService) { 
+    this.ObtenerUsuarioActual()
+    this.GetAllUsers()
   }
 
 
   apiUrlUser: string = "https://localhost:7119/api/User/getUser"
+  apiUrlCurrentUser: string = "https://localhost:7119/api/User/getCurrentUser"
   apiUrlAllUsers: string = "https://localhost:7119/api/User/getUsers"
   
   
@@ -32,33 +38,56 @@ export class UserService {
     })
   }
 
-  
-
-  ObtenerUser():Observable<ApiResponse>{
-    const userIdService = this.authService.getUser();
-    const userId = parseInt(userIdService?.id ?? '0');
-    return this.http.get<ApiResponse>(this.apiUrlUser + `/${userId}`, {
+  ObtenerUsuarioActual():void{
+    
+    this.http.get<ApiResponse>(this.apiUrlCurrentUser, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
-    }).pipe(
+    })
+    .pipe(
       tap(user => {
-        this.user = {
+        
+        this.userCurrent = {
           userId: user.userdto.userId,
           username: user.userdto.username,
           email: user.userdto.email,
           gender: this.obtenerGenero(Number(user.userdto.gender))
         };
-        this.userSubject.next(user);
+        this.userCurrentSubject.next(user)
       }),
       catchError(error => {
         console.error('Error cargando usuario', error);
         return throwError(() => error);
       })
-    )
+    ).subscribe(); 
   }
+  
 
-  GetAllUsers():Observable<manyApiResponse>{
-    return this.http.get<manyApiResponse>(this.apiUrlAllUsers, {
+  // ObtenerUser():Observable<ApiResponse>{
+  //   const userIdService = this.authService.getUser();
+  //   const userId = parseInt(userIdService?.userid ?? '0');
+  //   return this.http.get<ApiResponse>(this.apiUrlUser + `/${userId}`, {
+  //     headers: { 'Content-Type': 'application/json' },
+  //     withCredentials: true
+  //   }).pipe(
+  //     tap(user => {
+  //       this.user = {
+  //         userId: user.userdto.userId,
+  //         username: user.userdto.username,
+  //         email: user.userdto.email,
+  //         gender: this.obtenerGenero(Number(user.userdto.gender))
+  //       };
+  //       this.userSubject.next(user);
+  //     }),
+  //     catchError(error => {
+  //       console.error('Error cargando usuario', error);
+  //       return throwError(() => error);
+  //     })
+  //   )
+  // }
+
+  GetAllUsers():void{
+   this.http.get<manyApiResponse>(this.apiUrlAllUsers, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     }).pipe(
@@ -69,7 +98,7 @@ export class UserService {
         console.error('Error cargando usuario', error);
         return throwError(() => error);
       })
-    )
+    ).subscribe()
   }
 
 
