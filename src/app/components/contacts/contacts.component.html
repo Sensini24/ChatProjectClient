@@ -56,13 +56,13 @@
                     </div>
                     <div class="chat-time">11:15</div>
                 </div> -->
-                @for(contacts of contactsAll; track contacts.userId){
-                    <div class="chat-item" (click)="createChat(contacts.userId)">
+                @for(contacts of contactsForUser; track contacts.contactUserId){
+                    <div class="chat-item" (click)="createChat(contacts.contactUserId)">
                         <div class="chat-avatar">
-                            <div class="initials">{{contacts.username | initials  }}</div>
+                            <div class="initials">{{(contacts.nickName || 'Unknown') | initials}}</div>
                         </div>
                         <div class="chat-details">
-                            <div class="chat-name">{{contacts.username}}</div>
+                            <div class="chat-name">{{contacts.nickName}}</div>
                             <div class="chat-preview">Are you going to a house...</div>
                         </div>
                         <div class="chat-time">10:55</div>

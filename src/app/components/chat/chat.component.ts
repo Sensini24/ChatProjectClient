@@ -136,7 +136,7 @@ export class ChatComponent implements OnInit {
               this.privateMessages.push(element);
             });
             // this.contactName = data.chatDto.ChatParticipants
-            console.log("Private messages en array: ", this.privateMessages)
+            // console.log("Private messages en array: ", this.privateMessages)
           }
         
         

@@ -7,6 +7,8 @@ import { ApiResponse, manyApiResponse, User } from '../../interfaces/IUser';
 import { InitialsPipe } from '../../pipes/initials.pipe';
 import { MessageService } from '../../services/message.service';
 import { ApiResponseChat } from '../../interfaces/IChat';
+import { ContactService } from '../../services/contact.service';
+import { Contact } from '../../interfaces/IContact';
 
 @Component({
   selector: 'app-contacts',
@@ -21,14 +23,15 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription | undefined;
   private usersSubscription : Subscription | undefined
 
+  private contactsSubscription : Subscription | undefined;
+
   private messageSubscription: Subscription | undefined;
-  private receivePrivateChats : Subscription | undefined;
   
-  userId:number = 0
   user:User | undefined
 
   username:string = "";
   contactsAll:User[] = [];
+  contactsForUser:Contact[] = [];
  
 
   childIdContact:number = 0
@@ -44,14 +47,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
   nameChat:string = ""
 
   user$: Observable<ApiResponse> | undefined;
-  constructor(private userService: UserService,private authService:AuthService, private messageService:MessageService){
+  constructor(private userService: UserService,private contactsService:ContactService, private messageService:MessageService){
   }
 
   ngOnInit(): void {
     this.userSubscription = this.userService.$userCurrent.subscribe((data: ApiResponse | null) => {
       if (data) {
-        // console.log("Usuario obtenido: ", data)
-        // console.log("Usuario nuevo: ", this.user)
         this.user = data.userdto
         this.username = this.user?.username ?? "";
         console.log("nombre para perfil: ", this.username);
@@ -69,12 +70,17 @@ export class ContactsComponent implements OnInit, OnDestroy {
           this.contactsAll?.push(user);
         }
       }
-      
-    
       // Agregar todos los usuarios correctamente usando spread operator o concat
       // this.contactsAll.push(...data.userdto);
 
         // console.log("Todos los usuario actuales2 : ", this.contactsAll);
+    })
+
+    this.contactsSubscription = this.contactsService.contacts$.subscribe(contacts=>{
+      if(contacts){
+        this.contactsForUser = contacts
+        console.log("CONTACTOS OBTENIDOS: ", contacts)
+      }
     })
         
   }
