@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, Observable, tap } from 'rxjs';
-import { ApiResponseContact, Contact } from '../interfaces/IContact';
+import { ApiResponseAddContact, ApiResponseContact, Contact, ContactAddDTO } from '../interfaces/IContact';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -9,9 +9,13 @@ import { HttpClient } from '@angular/common/http';
 export class ContactService {
 
   apiUrlContacts:string = "https://localhost:7119/api/Contact/getContacts"
+  apiUrlAddContact:string = "https://localhost:7119/api/Contact/addContact"
 
   private contactsSubject = new BehaviorSubject<Contact[] | null>(null);
   public contacts$ = this.contactsSubject.asObservable();
+
+  private addContactSubject = new BehaviorSubject<ContactAddDTO | null>(null);
+  public addcontact$ = this.addContactSubject.asObservable();
 
   constructor(private http:HttpClient) { 
     this.GetContacts()
@@ -23,10 +27,23 @@ export class ContactService {
       withCredentials: true,
     }).pipe(
       tap(apidata => {
-        console.log("API DATA CONTACTS COMPLETA: ", apidata); // Puedes loguear la respuesta completa si quieres
-        this.contactsSubject.next(apidata.contacts); // Pasa la lista de contactos al Subject
+        console.log("API DATA CONTACTS COMPLETA: ", apidata); 
+        this.contactsSubject.next(apidata.contacts); 
       })
-    ).subscribe(); // ¡Importante suscribirse para que la petición se ejecute!
+    ).subscribe(); 
+  }
+
+  AddContact(contacto:ContactAddDTO): Observable<ApiResponseAddContact| undefined> {
+    return this.http.post<ApiResponseAddContact>(this.apiUrlAddContact, contacto, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    }).pipe(
+      tap(apidata => {
+        console.log("GUARDADO DE CONTACTO ", apidata);
+        this.addContactSubject.next(apidata.contactaddto);
+      })
+    )
+    
   }
 
 }

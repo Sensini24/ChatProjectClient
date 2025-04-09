@@ -20,7 +20,7 @@ export class ChatComponent implements OnInit {
   @Input() childIdUserCurrent:number = 0
   @Input() isShowMessagesContact:boolean = false
   @Input() isShowPresentationChat:boolean = true
-  @Input() childUserNameCurrent:string = ""
+  @Input() contactCurrentName:string = ""
 
   
   datos:string = "";
@@ -68,7 +68,7 @@ export class ChatComponent implements OnInit {
     //? OBTENER LOS MENSAJES GLOBALES Y GUARDARLOS EN EL ARRYA MESSAGES
     this.signalGlobalMessageSubscription = signalMessageService.messageReceived.subscribe((message)=>{
       if(message){
-        console.log("Mensaje publicos:", message.message, message.user, message.userId, message.connectionId, message.date)
+        // console.log("Mensaje publicos:", message.message, message.user, message.userId, message.connectionId, message.date)
         this.messages.push(message)
         // localStorage.setItem("iduser", message.user)
       }
@@ -77,7 +77,7 @@ export class ChatComponent implements OnInit {
     //? OBTENER LOS MENSAJES PRIVADOR Y GUARDARLOS EN EL ARRAY
     this.signalprivateMessageSubscription = this.signalMessageService.privateMessageReceived.subscribe((privateMessages:any)=>{
       if (privateMessages) {
-        console.log("Mensajes privados: ", privateMessages.message, privateMessages.user, privateMessages.userId, privateMessages.connectionId, privateMessages.date);
+        // console.log("Mensajes privados: ", privateMessages.message, privateMessages.user, privateMessages.userId, privateMessages.connectionId, privateMessages.date);
         this.privateMessages.push(privateMessages);
         // Aquí puedes ejecutar la lógica que dependa del connectionId
       }
@@ -90,7 +90,7 @@ export class ChatComponent implements OnInit {
           this.user = data.userdto
           this.username = this.user?.username ?? "";
           this.userIdCurrent  = this.user?.userId
-          console.log("nombre para perfil: ", this.username);
+          // console.log("nombre para perfil: ", this.username);
         } else {
           console.log("No user data available");
         }
@@ -107,6 +107,7 @@ export class ChatComponent implements OnInit {
   
   ngOnInit(){
     usersConnected:[]=[]
+    
     
     this.signalUserConnectedSubscription = this.signalMessageService.userConnected.subscribe((connections: any)=>{
       if(connections){
@@ -149,7 +150,16 @@ export class ChatComponent implements OnInit {
     if (this.childIdContact && this.childIdUserCurrent) {
       const chatName = this.getChatName();
       this.messageService.loadPrivateChat(chatName, 150);
+      
     }
+
+    if(this.contactCurrentName){
+      this.contactName = this.contactCurrentName
+      console.log("NOMBRE DE CONTACTO PASADO DE PADRE: ", this.contactName)
+    }
+    
+
+    
   }
 
   ngOnDestroy(): void {
@@ -197,7 +207,7 @@ export class ChatComponent implements OnInit {
     const connectionContact = this.usersConnected[this.childIdContact]?.[0]
     if(connectionContact != null || connectionContact !== undefined){
       this.signalMessageService.sendPrivateMessage(connectionContact, this.message)
-      console.log("Conexion de usuario y mensaje: ", connectionContact, this.message)
+      // console.log("Conexion de usuario y mensaje: ", connectionContact, this.message)
     }else{
       console.log("nO HAY CONECCION CON EL CONTACTO, PERO SI SE ENVIAR MENSAJE AL ARRAY")
 
@@ -218,7 +228,7 @@ export class ChatComponent implements OnInit {
     //? Creacion de chat, guardado de participantes y guardado de mensaje en base de datos.
     this.savePrivateChatMessage()
   }
-
+  
 
   savePrivateChatMessage(){
     // this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
@@ -250,7 +260,7 @@ export class ChatComponent implements OnInit {
 
   
   showTyping(event:Event){
-    console.log("tipeando: ", (event.target as HTMLInputElement).value)
+    // console.log("tipeando: ", (event.target as HTMLInputElement).value)
 
     const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
     // console.log("this.isTyping: ", this.isTyping)

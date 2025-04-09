@@ -51,7 +51,6 @@ export class MessageService {
         this.privateChatSubject.next(null);
       }
     });
-
   }
 
 
@@ -67,7 +66,5 @@ export class MessageService {
       console.error('Error: Invalid structure in cached data for adding message.');
     }
   }
-
-
   
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
-import { ApiResponse, manyApiResponse, User } from '../interfaces/IUser';
+import { ApiResponse, ApiResponseDTO, manyApiResponse, User, UserDTO } from '../interfaces/IUser';
 import { Subject } from '@microsoft/signalr';
 import { AuthService } from './auth.service';
 @Injectable({
@@ -17,6 +17,9 @@ export class UserService {
 
   private userCurrentSubject = new BehaviorSubject<ApiResponse | null>(null);
   public $userCurrent = this.userCurrentSubject.asObservable()
+
+  private findUsersSubject = new BehaviorSubject<ApiResponseDTO | null>(null);
+  public $findUsers = this.findUsersSubject.asObservable()
   user:User | undefined
   userCurrent:User | undefined
   constructor(private http:HttpClient, private authService: AuthService) { 
@@ -28,7 +31,7 @@ export class UserService {
   apiUrlUser: string = "https://localhost:7119/api/User/getUser"
   apiUrlCurrentUser: string = "https://localhost:7119/api/User/getCurrentUser"
   apiUrlAllUsers: string = "https://localhost:7119/api/User/getUsers"
-  
+  apiUrlsFindusers: string = "https://localhost:7119/api/User/findUser"
   
 
   GetUser(userId:number):Observable<User>{
@@ -99,6 +102,17 @@ export class UserService {
         return throwError(() => error);
       })
     ).subscribe()
+  }
+
+  FindUsersForContacts(initials:string):Observable<ApiResponseDTO | null>{
+    return this.http.get<ApiResponseDTO>(this.apiUrlsFindusers + `/${initials}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
+    }).pipe(
+      tap(users=>{
+        this.findUsersSubject.next(users);
+      })
+    )
   }
 
 

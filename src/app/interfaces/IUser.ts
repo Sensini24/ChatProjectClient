@@ -21,3 +21,7 @@ export interface manyApiResponse{
     success : boolean,
     userdto: UserDTO[]
 }
+
+export interface ApiResponseDTO{
+    userdto: UserDTO[]
+}

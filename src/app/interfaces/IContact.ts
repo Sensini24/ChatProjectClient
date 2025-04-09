@@ -4,6 +4,8 @@ export interface ApiResponseContact{
     contacts:Contact[]
 }
 
+
+
 export interface Contact {
     contactId:number,
     userId:number,
@@ -13,4 +15,17 @@ export interface Contact {
     isFavorite: boolean,
     isDeleted: boolean,
     isBlocked: boolean
+}
+
+
+export interface ApiResponseAddContact{
+    success:boolean,
+    message:string,
+    contactaddto:ContactAddDTO
+}
+
+export interface ContactAddDTO{
+    userId:number,
+    contactUserId: number,
+    nickName?: string
 }

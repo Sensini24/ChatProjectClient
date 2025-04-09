@@ -2,11 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { User } from '../../interfaces/IUser';
 import { UserRegister } from '../../interfaces/IUserRegister';
 import { UserLogin } from '../../interfaces/IUserLogin';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
