@@ -49,7 +49,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   isFocus:boolean = false
   isShowOptionsContacts:boolean=false
   wasClickedOptions:boolean = false
-
+  isContactSaved:boolean = false
+  
   arrayIds: string[] = []
   nameChat:string = ""
 
@@ -116,6 +117,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.userfindSubscription = this.userService.FindUsersForContacts(tosearch).subscribe((data: ApiResponseDTO | null) => {
       //? FILTRADO PARA ADJUDICAR BOTON DE AGREGAR CONTACTO SI NO ESTA ENTRE LOS CONTACTOS
       this.yaestaencontactos = false
+      this.isContactSaved = false
       if (data?.userdto) {
         //? FILTRO PARA QUITAR AL USUARIO ACTUAL
         var withoutSelfUser = data.userdto.filter(u=>u.userId != this.user?.userId)
@@ -139,6 +141,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   contact:ContactAddDTO | undefined
   addNewContact(idContact:number, username:string){
     console.log("DATOS OBTENIDOS PARA GUARADR CONTACTO: ", idContact,username)
@@ -147,8 +150,14 @@ export class ContactsComponent implements OnInit, OnDestroy {
       contactUserId:idContact,
       nickName:username
     }
+    
     this.addContactSubscription = this.contactsService.AddContact(this.contact).subscribe((data:ApiResponseAddContact | undefined)=>{
-      console.log(data)
+      if(data?.success==true){
+        this.isContactSaved = true
+        this.contactsForUser = [...this.contactsForUser, data.contactaddto]
+
+        this.contactsService.GetContacts();
+      }
     })
 
   }
@@ -156,6 +165,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     console.log("USUARIO GUARADDO: ", this.user)
   }
 
+  
   createChat(contactId:number){
     this.childIdContact = contactId;
     this.childIdUserCurrent = this.user?.userId ?? 0

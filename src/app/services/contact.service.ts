@@ -14,7 +14,7 @@ export class ContactService {
   private contactsSubject = new BehaviorSubject<Contact[] | null>(null);
   public contacts$ = this.contactsSubject.asObservable();
 
-  private addContactSubject = new BehaviorSubject<ContactAddDTO | null>(null);
+  private addContactSubject = new BehaviorSubject<ContactAddDTO| null>(null);
   public addcontact$ = this.addContactSubject.asObservable();
 
   constructor(private http:HttpClient) { 

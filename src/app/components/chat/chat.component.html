@@ -99,7 +99,7 @@
             @for(message of privateMessages; track message.message){
                 @if(message.userId === userIdCurrent){
                     <div class="message-group">
-                        <div class="message-time">You, 11:08 AM</div>
+                        <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div>
                         <div class="message outgoing">
                             <div class="message-content">
                                 <p>{{message.messageText}}</p>
@@ -108,7 +108,7 @@
                     </div>
                 }@else {
                     <div class="message-group">
-                        <div class="message-time">{{message.userName}}</div>
+                        <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}}</div>
                         <div class="message">
                             <div class="message-avatar">
                                 <img src="/placeholder.svg?height=36&width=36" alt="Kate">

@@ -4,14 +4,14 @@ import { MessageService } from '../../services/message.service';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { SignalMessageService } from '../../signalsService/signal-message.service';
 import { ApiResponseChat, Chat, Message } from '../../interfaces/IChat';
-import { CommonModule } from '@angular/common';
-import e from 'express';
+import { CommonModule, DatePipe } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ApiResponse, User } from '../../interfaces/IUser';
+import { DateShowPipe } from '../../pipes/dateshow.pipe';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule],
+  imports: [CommonModule, DateShowPipe],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
@@ -29,13 +29,10 @@ export class ChatComponent implements OnInit {
   message:string = "";
   user:User | undefined
 
-  // newMessage: {user:string, message:string}
   messages: { user: string; message: string, userId:number, connectionId:string, date:Date }[] = [];
-  // privateMessages :{ message: string; user: string; userId:number, connectionId:string, date:Date }[]  = [];
   privateMessages :any[]  = [];
   usersConnected:[] = []
   
-  // userNameLS: string = localStorage.getItem("iduser") || '';
   connectionId: string ="";
 
 

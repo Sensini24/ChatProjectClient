@@ -40,7 +40,7 @@
                 <i class="fa-solid fa-search"></i>
             </div>
                 @for (user of usersFind; track user.userId) {
-                    <div id="sidebarOptions" *ngIf="usersFind.length>0" class="contextual-menu sidebar-options-contacts">
+                    <div id="sidebarOptions" *ngIf="usersFind.length>0 && isContactSaved==false" class="contextual-menu sidebar-options-contacts">
                                 
                         <div class="menu-item">
                             <i class="fa-solid fa-user"></i>

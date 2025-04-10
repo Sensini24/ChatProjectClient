@@ -21,7 +21,7 @@ export interface Contact {
 export interface ApiResponseAddContact{
     success:boolean,
     message:string,
-    contactaddto:ContactAddDTO
+    contactaddto:Contact
 }
 
 export interface ContactAddDTO{
