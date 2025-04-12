@@ -10,6 +10,8 @@ import { ApiResponseChat } from '../../interfaces/IChat';
 import { ContactService } from '../../services/contact.service';
 import { ApiResponseAddContact, Contact, ContactAddDTO } from '../../interfaces/IContact';
 import { CommonModule } from '@angular/common';
+import { GroupService } from '../../services/group.service';
+import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO } from '../../interfaces/IGroup';
 
 @Component({
   selector: 'app-contacts',
@@ -29,6 +31,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private messageSubscription: Subscription | undefined;
   private userfindSubscription: Subscription | undefined;
   private addContactSubscription: Subscription | undefined;
+  private createGroupSubscription : Subscription | undefined;
+  private getGroupsByUserSubscription: Subscription | undefined;
 
   user:User | undefined
 
@@ -36,7 +40,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   username:string = "";
   contactsAll:User[] = [];
   contactsForUser:Contact[] = [];
-  usersFind:User[] = []
+  usersFind:any[] = []
+  groupsForUser:GroupGetSimpleDTO[] = []
  
 
   childIdContact:number = 0
@@ -56,7 +61,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
 
   user$: Observable<ApiResponse> | undefined;
-  constructor(private userService: UserService,private contactsService:ContactService, private messageService:MessageService){
+  constructor(private userService: UserService,private contactsService:ContactService, private groupService:GroupService){
   }
 
   ngOnInit(): void {
@@ -73,7 +78,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     // this.user$ = this.userService.ObtenerUsuarioActual()
 
     this.usersSubscription = this.userService.$users.subscribe((data:manyApiResponse | null)=>{
-      console.log("Todos los usuario actuales: ", data?.userdto);
+      // console.log("Todos los usuario actuales: ", data?.userdto);
       if(data?.userdto){
         for (const user of data.userdto) {
           this.contactsAll?.push(user);
@@ -88,8 +93,19 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.contactsSubscription = this.contactsService.contacts$.subscribe(contacts=>{
       if(contacts){
         this.contactsForUser = contacts
-        console.log("CONTACTOS OBTENIDOS: ", contacts)
+        // console.log("CONTACTOS OBTENIDOS: ", contacts)
       }
+    })
+
+    this.getGroupsByUserSubscription = this.groupService.getGroupsByUser$.subscribe(groups=>{
+      if(groups){
+        this.groupsForUser = groups
+        // console.log("API DATA GROUP COMPLETA: ", groups);
+        console.log("Array para grupos de usuario: ", this.groupsForUser);
+      }else{
+        console.log("No se puedo obtener los grupos")
+      }
+      
     })
         
   }
@@ -105,9 +121,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
     return generos[numero] ?? "Desconocido"
   }
 
+  contactsFiltered:any = []
   yaestaencontactos:boolean= false
   searchNewContacts(event:Event){
-    console.log("tipeando: ", (event.target as HTMLInputElement).value)
+    // console.log("tipeando: ", (event.target as HTMLInputElement).value)
 
     var tosearch = (event.target as HTMLInputElement).value
     if (tosearch.length == 0){
@@ -121,22 +138,17 @@ export class ContactsComponent implements OnInit, OnDestroy {
       if (data?.userdto) {
         //? FILTRO PARA QUITAR AL USUARIO ACTUAL
         var withoutSelfUser = data.userdto.filter(u=>u.userId != this.user?.userId)
-        console.log("USUARIO FILTRADOS: ", withoutSelfUser)
-
       
-        withoutSelfUser.filter(x=>{
-          this.contactsForUser.forEach(elem=>{
-            if(x.userId == elem.contactUserId){
-              this.yaestaencontactos = true
-            }
-          })
-        })
+
         //? PASAR EL ARRYA CON EL USUARIO ENCONTRADO POR COINCIDENCIA DE INICIALES.
-        this.usersFind = withoutSelfUser
-        // console.log("comparacion: ", this.yaestaencontactos)
-        // console.log("Usuarios encontrados: ", this.usersFind);
+        this.usersFind = withoutSelfUser.map(user=>{
+          var yaEsContacto = this.contactsForUser.some(x=>x.contactUserId == user.userId)
+          return {...user, yaEstaEnContactos: yaEsContacto}
+        })
+        
+        // console.log("USUARIO FILTRADOS: ",  this.contactsFiltered)
       } else {
-        this.usersFind = [];
+        this.contactsFiltered = [];
         console.log("No se encontraron usuarios.");
       }
     });
@@ -144,7 +156,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   contact:ContactAddDTO | undefined
   addNewContact(idContact:number, username:string){
-    console.log("DATOS OBTENIDOS PARA GUARADR CONTACTO: ", idContact,username)
+    // console.log("DATOS OBTENIDOS PARA GUARADR CONTACTO: ", idContact,username)
     this.contact = {
       userId:this.user?.userId ?? 0,
       contactUserId:idContact,
@@ -157,6 +169,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
         this.contactsForUser = [...this.contactsForUser, data.contactaddto]
 
         this.contactsService.GetContacts();
+        alert(`El usuario ${data.contactaddto.nickName} ha sido agregado como contacto`)
       }
     })
 
@@ -176,19 +189,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.isShowMessagesContact = true;
     this.isShowPresentationChat = false;
     this.isFocus = true
-    
-    
-    // this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
-    // this.nameChat = this.arrayIds.sort().join("-")
-
-    // this.mes
-    // console.log("Id contact: ", this.childIdContact, "Id user current: ",this.childIdUserCurrent, "Username: ", this.childUserNameCurrent, "IsShow meesage: ", this.isShowMessagesContact, "IsShowPresentation: ", this.isShowPresentationChat)
-
   }
+
+
 
   moreOptionsContacts(nickName: string){
     this.isShowOptionsContacts = !this.isShowOptionsContacts
-    console.log("Nombre de contacto clicado: ", nickName, this.wasClickedOptions)
+    // console.log("Nombre de contacto clicado: ", nickName, this.wasClickedOptions)
   }
  
 
@@ -198,6 +205,52 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.nameChat = this.arrayIds.sort().join("-")
 
     return this.nameChat
+  }
+
+
+  isShowCreateGroup:boolean=false
+  isShowModalCreateGroup:boolean = false
+  //! CODIFICACION DE GRUPOS
+  showItemsSideGroup(){
+    this.isShowCreateGroup = !this.isShowCreateGroup
+  }
+  modalCreateGroup(){
+    
+    this.isShowModalCreateGroup = true
+    console.log(this.isShowModalCreateGroup)
+  }
+
+  cancelCreationGroup(){
+    this.isShowModalCreateGroup = false
+    console.log(this.isShowModalCreateGroup)
+  }
+
+  group:GroupAddDTO | undefined;
+  groupParticipants : GroupParticipantsAddDTO[] | undefined
+  createNewGroup(inputNameGroup:HTMLInputElement){
+    console.log("valor de input para grupo: ", inputNameGroup.value)
+    if(inputNameGroup.value == "" || inputNameGroup.value == null){
+      alert("Ingrese un nombre para el grupo")
+      return
+    }
+    this.groupParticipants = [{
+      userId: this.user?.userId ?? 0
+    }];
+
+
+    this.group = {
+      nameGroup : inputNameGroup.value,
+      groupCategory : "Literatura",
+      groupParticipants : this.groupParticipants
+    }
+    this.createGroupSubscription = this.groupService.CreateGroup(this.group).subscribe((data: ApiGroupResponse) => {
+      if(data.success == true){
+        this.isShowModalCreateGroup = false
+        console.log("Datos recibidos posterior a cracion de grupo: ", data.group)
+        alert("Grupo creado correctamente")
+      }
+      
+    })
   }
 
 
@@ -214,6 +267,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
       this.userfindSubscription.unsubscribe();
     }
 
+    if (this.createGroupSubscription) {
+      this.createGroupSubscription.unsubscribe();
+    }
+    
     
   }
 }

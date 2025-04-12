@@ -154,9 +154,6 @@ export class ChatComponent implements OnInit {
       this.contactName = this.contactCurrentName
       console.log("NOMBRE DE CONTACTO PASADO DE PADRE: ", this.contactName)
     }
-    
-
-    
   }
 
   ngOnDestroy(): void {

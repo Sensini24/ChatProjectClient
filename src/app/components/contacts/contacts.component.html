@@ -18,19 +18,21 @@
                     <i class="fa-regular fa-star"></i>
                 </div> -->
             </div>
-            <div class="contacts-section">
-                <div class="contacts-icon">
-                    <i class="fa-regular fa-user"></i>
+            <div style="display: flex;">
+                <div class="contacts-section">
+                    <div class="contacts-icon">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="stats-section">
-                <div class="stats-icon">
-                    <i class="fa-solid fa-chart-simple"></i>
+                <div class="stats-section">
+                    <div class="stats-icon">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="video-section">
-                <div class="video-icon">
-                    <i class="fa-solid fa-video"></i>
+                <div class="video-section">
+                    <div class="video-icon">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,7 +47,7 @@
                         <div class="menu-item">
                             <i class="fa-solid fa-user"></i>
                             <span>{{user.username}}</span>
-                            @if(yaestaencontactos == false){
+                            @if(user.yaEstaEnContactos ==false){
                                 <button class="demo-button" (click)="addNewContact(user.userId, user.username)">Agregar Contacto</button>
                             }@else{
                                 <button class="demo-button">Mira tus chats</button>
@@ -105,6 +107,95 @@
                         </div>
                     
                 }
+
+                
+                
+            </div>
+        </div>
+
+        <div class="recent-chats-groups">
+            <div class="recent-header">
+                <span>Grupos</span>
+                <button class="add-chat" (click)="showItemsSideGroup()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div id="sidebarOptions" *ngIf="isShowCreateGroup"  class="contextual-menu sidebar-options">
+                            
+                <!-- <div class="menu-item">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span>Ocultar de la barra lateral</span>
+                </div> -->
+                <div class="menu-item" (click)="modalCreateGroup()">
+                    <i class="fa-solid fa-people-group"></i>
+                    <span>Crear un nuevo grupo</span>
+                </div>
+            </div>
+            <!------------------------------ MODAL PARA NUEVO GRUPO ------------------------------------------>
+            <div class="modal-overlay" *ngIf="isShowModalCreateGroup">
+                <div class="modal">
+                    <div class="modal-header">
+                        <div class="modal-title">Crear nuevo GRUPO</div>
+                        <!-- <button class="modal-close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button> -->
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label" for="chatName">Nombre del GRUPO</label>
+                            <input type="text" id="chatName" class="form-input" #inputNameGroup  placeholder="Ej: Grupo de Literatura Griega">
+                            <div class="form-hint">Elige un nombre descriptivo para tu GRUPO</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" (click)="cancelCreationGroup()">Cancelar</button>
+                        <button class="btn btn-primary" (click)="createNewGroup(inputNameGroup)">Crear</button>
+                    </div>
+                </div>
+            </div>
+            <!------------------------------ ACABA MODAL PARA GRUPO ------------------------------------------>
+
+            <div class="chat-list">
+                <!-- <div class="chat-item active">
+                    <div class="chat-avatar">
+                        <img src="/placeholder.svg?height=40&width=40" alt="Real estate deals">
+                    </div>
+                    <div class="chat-details">
+                        <div class="chat-name">Real estate deals</div>
+                        <div class="chat-preview">typing...</div>
+                    </div>
+                    <div class="chat-time">11:15</div>
+                </div> -->
+                @for(groups of groupsForUser; track groups.groupId){
+                    <div class="chat-item">
+                        <div class="chat-avatar">
+                            <div class="initials">{{(groups.nameGroup) | initials}}</div>
+                        </div>
+                        <div class="chat-details">
+                            <div class="chat-name">{{groups.nameGroup}}</div>
+                        </div>
+                        <div class="chat-time">10:55</div>
+                        <div class="more-options" >
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </div>
+                    </div>
+
+                    
+                        <!-- <div id="sidebarOptions"  *ngIf = "childIdContact == contacts.contactUserId && isShowOptionsContacts" class="contextual-menu sidebar-options">
+                            
+                            <div class="menu-item">
+                                <i class="fa-solid fa-eye-slash"></i>
+                                <span>Ocultar de la barra lateral</span>
+                            </div> 
+                            <div class="menu-item">
+                                <i class="fa-solid fa-thumbtack"></i>
+                                <span>Agregar a Favoritos y Pinear</span>
+                            </div>
+                            <div class="menu-item">
+                                <i class="fa-solid fa-pen"></i>
+                                <span>Cambiar nombre de contacto</span>
+                            </div> 
+                        </div> -->
+                    
+               } 
 
                 
                 

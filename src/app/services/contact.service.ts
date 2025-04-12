@@ -27,7 +27,7 @@ export class ContactService {
       withCredentials: true,
     }).pipe(
       tap(apidata => {
-        console.log("API DATA CONTACTS COMPLETA: ", apidata); 
+        // console.log("API DATA CONTACTS COMPLETA: ", apidata); 
         this.contactsSubject.next(apidata.contacts); 
       })
     ).subscribe(); 
@@ -39,7 +39,7 @@ export class ContactService {
       withCredentials: true,
     }).pipe(
       tap(apidata => {
-        console.log("GUARDADO DE CONTACTO ", apidata);
+        // console.log("GUARDADO DE CONTACTO ", apidata);
         this.addContactSubject.next(apidata.contactaddto);
       })
     )
