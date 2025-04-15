@@ -12,7 +12,7 @@ export class SignalMessageService {
   public messageReceived = new Subject<{user:string, message:string, userId:number, connectionId:string, date:Date}>();
   public userConnected = new Subject<any>();
   public userDisconnected = new Subject<any>();
-  public privateMessageReceived = new Subject<{message:string, user:string, userId:number, connectionId:string, date:Date}>();
+  public privateMessageReceived = new Subject<{message:string, user:string, userId:number, connectionId:string, date:Date, chatName:string}>();
 
 
   //? He creado un observable para esperar cuando se obtenga el connection id, y cuando se lo obtiene se lo almacena en una variable publica, para poder ser obtenido en todos lados.
@@ -68,8 +68,8 @@ export class SignalMessageService {
     })
 
 
-    this.connection?.on("ReceivePrivateMessage", (message:string, user:string, userId:number, connectionId:string, date:Date)=>{
-      this.privateMessageReceived.next({user, message, userId, connectionId, date});
+    this.connection?.on("ReceivePrivateMessage", (message:string, user:string, userId:number, connectionId:string, date:Date, chatName:string)=>{
+      this.privateMessageReceived.next({user, message, userId, connectionId, date,chatName});
     })
 
   }
@@ -83,9 +83,9 @@ export class SignalMessageService {
     }
   }
 
-  public sendPrivateMessage = (recipientConnectionId:string, message:string)=>{
+  public sendPrivateMessage = (recipientConnectionId:string, message:string, chatName:string)=>{
     if(this.connection){
-      this.connection.invoke("SendPrivateMessage", recipientConnectionId, message)
+      this.connection.invoke("SendPrivateMessage", recipientConnectionId, message, chatName)
         .catch(err => console.error(err));
     }else {
       console.error('ChatHub connection is not established.');

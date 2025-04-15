@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from "@angular/core";
   })
 export class DateShowPipe implements PipeTransform {
     transform(fecha: Date | string): string | undefined {
-        console.log("fecha paado: ", fecha, typeof fecha)
+        // console.log("fecha pasado: ", fecha, typeof fecha)
         const fechaActual = new Date(fecha);
         const fechaToCompare = new Date();
 

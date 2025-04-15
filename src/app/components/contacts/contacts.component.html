@@ -164,8 +164,15 @@
                     </div>
                     <div class="chat-time">11:15</div>
                 </div> -->
+                @if(groupsForUser.length==0 || groupsForUser == null){
+                    <div style="display: flex; justify-content: center; align-items: center; padding: 15px;  background-color: #E0F2F1; border-radius: 15px;">
+                        <p>No tienes ningún grupo. Crea uno ahora mismo!!!</p>
+                    </div>
+                        
+                }
                 @for(groups of groupsForUser; track groups.groupId){
-                    <div class="chat-item">
+                    
+                    <div class="chat-item" (click)="createGroupSaloon(groups.groupId, groups.nameGroup)">
                         <div class="chat-avatar">
                             <div class="initials">{{(groups.nameGroup) | initials}}</div>
                         </div>
@@ -203,6 +210,8 @@
         </div>
     </div>
 
-    <app-chat [contactCurrentName] = "contactCurrentName" [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent" [isShowMessagesContact] = "isShowMessagesContact" [isShowPresentationChat] = "isShowPresentationChat"  ></app-chat>
+    <app-chat [hidden]="isShowPrivateChatComponent" [contactCurrentName] = "contactCurrentName" [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent" [isShowMessagesContact] = "isShowMessagesContact" [isShowPresentationChat] = "isShowPresentationChat" [nameChat] = "nameChat"  ></app-chat>
+
+    <app-group [hidden]="isShowGroupComponent" [nameGroup]="nameGroup" [groupId] = "groupId"  ></app-group>
 </div>
 

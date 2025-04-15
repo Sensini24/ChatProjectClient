@@ -96,31 +96,36 @@
             </div> -->
             
     
-            @for(message of privateMessages; track message.message){
-                @if(message.userId === userIdCurrent){
-                    <div class="message-group">
-                        <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div>
-                        <div class="message outgoing">
-                            <div class="message-content">
-                                <p>{{message.messageText}}</p>
+            @if(pruebaArrayMessagesMap.length > 0 ){
+                @for(message of pruebaArrayMessagesMap; track message.messageDate){
+                    @if(message.userId === userIdCurrent){
+                        <div class="message-group">
+                            <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div>
+                            <div class="message outgoing">
+                                <div class="message-content">
+                                    <p>{{message.messageText}}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }@else {
-                    <div class="message-group">
-                        <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}}</div>
-                        <div class="message">
-                            <div class="message-avatar">
-                                <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                            </div>
-                            <div class="message-content">
-                                <p>{{message.messageText}}</p>
+                    }@else {
+                        <div class="message-group">
+                            <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}}</div>
+                            <div class="message">
+                                <div class="message-avatar">
+                                    <img src="/placeholder.svg?height=36&width=36" alt="Kate">
+                                </div>
+                                <div class="message-content">
+                                    <p>{{message.messageText}}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-    
+        
+                    }
                 }
+            }@else {
+                <p>No hay mensaje</p>
             }
+            
     
             <div class="message-group" [hidden]="isTyping">
                 <div class="typing-indicator">

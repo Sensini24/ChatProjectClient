@@ -12,10 +12,11 @@ import { ApiResponseAddContact, Contact, ContactAddDTO } from '../../interfaces/
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../services/group.service';
 import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO } from '../../interfaces/IGroup';
+import { GroupComponent } from '../group/group.component';
 
 @Component({
   selector: 'app-contacts',
-  imports: [ChatComponent, InitialsPipe, CommonModule],
+  imports: [ChatComponent, InitialsPipe, CommonModule, GroupComponent],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.css'
 })
@@ -48,7 +49,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   childIdUserCurrent:number = 0
   contactCurrentName:string = ""
 
-
+// CHAT PRIVADO
+  isShowPrivateChatComponent:boolean = false
   isShowPresentationChat:boolean = true
   isShowMessagesContact:boolean = false
   isFocus:boolean = false
@@ -58,7 +60,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
   
   arrayIds: string[] = []
   nameChat:string = ""
+  
 
+  // CHAT GRUPALES
+  isShowGroupComponent:boolean = true
 
   user$: Observable<ApiResponse> | undefined;
   constructor(private userService: UserService,private contactsService:ContactService, private groupService:GroupService){
@@ -189,6 +194,10 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.isShowMessagesContact = true;
     this.isShowPresentationChat = false;
     this.isFocus = true
+
+    this.isShowGroupComponent = true;
+    this.isShowPrivateChatComponent = false
+    this.nameChat = this.getChatName()
   }
 
 
@@ -228,7 +237,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   group:GroupAddDTO | undefined;
   groupParticipants : GroupParticipantsAddDTO[] | undefined
   createNewGroup(inputNameGroup:HTMLInputElement){
-    console.log("valor de input para grupo: ", inputNameGroup.value)
+    // console.log("valor de input para grupo: ", inputNameGroup.value)
     if(inputNameGroup.value == "" || inputNameGroup.value == null){
       alert("Ingrese un nombre para el grupo")
       return
@@ -246,11 +255,22 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.createGroupSubscription = this.groupService.CreateGroup(this.group).subscribe((data: ApiGroupResponse) => {
       if(data.success == true){
         this.isShowModalCreateGroup = false
-        console.log("Datos recibidos posterior a cracion de grupo: ", data.group)
+        // console.log("Datos recibidos posterior a cracion de grupo: ", data.group)
         alert("Grupo creado correctamente")
+        this.groupService.GetGroupsByUser()
       }
       
     })
+  }
+
+  groupId:number = 0;
+  nameGroup:string = ""
+  createGroupSaloon(groupId:number, nameGroup:string){
+    console.log("DATOS DE GRUPO OBTENIDO AL CLICAR: ", groupId, nameGroup)
+    this.isShowGroupComponent = false
+    this.isShowPrivateChatComponent = true
+    this.groupId = groupId;
+    this.nameGroup = nameGroup;
   }
 
 

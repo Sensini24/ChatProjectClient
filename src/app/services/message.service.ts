@@ -14,7 +14,7 @@ export class MessageService {
   messagesCache:Map<string, any> = new Map()
 
   private privateChatSubject = new BehaviorSubject<any | null>(null);
-  public $privateChat = this.privateChatSubject.asObservable()
+  // public $privateChat = this.privateChatSubject.asObservable()
 
   constructor(private http:HttpClient){}
 
@@ -33,31 +33,27 @@ export class MessageService {
   }
 
   // Método para cargar los chats privados con parámetros
-  loadPrivateChat(nameChat: string, filasObtener: number): void {
-    
+  loadPrivateChat(nameChat: string, filasObtener: number): Observable<any> {
     if(this.messagesCache.has(nameChat)){
-        console.log("Mensajes obtenidos desde caché: ", this.messagesCache.get(nameChat),this.messagesCache)
-        return this.privateChatSubject.next(this.messagesCache.get(nameChat));
-      }
-    this.GetPrivateChat(nameChat, filasObtener).subscribe({
-      next: (messages) => {
+      console.log("Mensajes obtenidos desde caché: ", this.messagesCache.get(nameChat), this.messagesCache);
+      return new Observable(subscriber => {
+        subscriber.next(this.messagesCache.get(nameChat));
+        subscriber.complete();
+      });
+    }
+    return this.GetPrivateChat(nameChat, filasObtener).pipe(
+      tap(messages => {
         this.messagesCache.set(nameChat, messages); // Almacena directamente 'messages'
-        this.privateChatSubject.next(messages); // Emite directamente 'messages'
         console.log("Mensajes obtenidos desde servidor: ", messages);
-      },
-      error: (error) => {
-        console.error('Error cargando chats privados:', error);
-        // Puedes emitir un valor null o un objeto de error al subject si lo deseas
-        this.privateChatSubject.next(null);
-      }
-    });
+      })
+    );
   }
 
 
 
   addMessageToCache(nameChat: string, newMessage: any): void {
     const cachedMessages = this.messagesCache.get(nameChat);
-    console.log("TIpo de cahce: ", typeof cachedMessages)
+    console.log("TIpo de cahce: ", cachedMessages)
     if (cachedMessages && cachedMessages.chatDto) {
       cachedMessages.chatDto.messages.push(newMessage);
       this.messagesCache.set(nameChat, cachedMessages);
