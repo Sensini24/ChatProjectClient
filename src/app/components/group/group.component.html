@@ -26,8 +26,8 @@
         </div>
         <div class="chat-messages">
     
-            @if(messagesGroup.length > 0){
-                @for(message of messagesGroup; track message.message){
+            @if(messagesGroupArray && messagesGroupArray.length  > 0){
+                @for(message of messagesGroupArray; track message.message){
                     @if(message.userId === userIdCurrent){
                         <div class="message-group">
                             <!-- <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div> -->
@@ -65,7 +65,7 @@
             
         </div>
         <div class="chat-input">
-            <input type="text" placeholder="Write your message..." #inputelement>
+            <input type="text" placeholder="Escribe un mensaje..." #inputelement (keyup.enter)="sendGroupMessage(inputelement)">
             <!-- #inputelement  (input)="showTyping($event)" -->
             <div class="input-actions">
                 <button class="emoji-btn"><i class="fa-regular fa-face-smile"></i></button>

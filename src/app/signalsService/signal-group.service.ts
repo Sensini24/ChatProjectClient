@@ -31,8 +31,8 @@ export class SignalGroupService {
       });
 
     
-    this.connection?.on("ReceiveGroupMessage", (user,userId, message)=>{
-      this.messageReceivedSubject.next({user,userId, message});
+    this.connection?.on("ReceiveGroupMessage", (groupName,groupId,user,userId, message)=>{
+      this.messageReceivedSubject.next({groupName,groupId,user,userId, message});
     })
   }
 
@@ -46,9 +46,9 @@ export class SignalGroupService {
   }
 
 
-  public SendMessageToGroup =(groupName:string, user:string, message:string)=>{
+  public SendMessageToGroup =(groupName:string, groupId:number, user:string, message:string)=>{
     if(this.connection){
-      this.connection?.invoke("SendMessageToGroup", groupName, user, message)
+      this.connection?.invoke("SendMessageToGroup", groupName, groupId, user, message)
       .catch(err => console.error(err))
     }else{
       console.log("La conexión a grupos no fue establecida")

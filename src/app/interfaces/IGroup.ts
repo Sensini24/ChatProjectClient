@@ -1,3 +1,6 @@
+/**
+ * Interfaces para obtener Grupos y participantes
+ */
 export interface ApiGroupResponse{
     success : boolean,
     message : string,
@@ -10,6 +13,14 @@ export interface ApiGroupSimpleResponse{
     groups : GroupGetSimpleDTO[]
 }
 
+export interface GroupGetSimpleDTO{
+    groupId : number,
+    nameGroup : string,
+    dateCreated : Date,
+    isDeleted : boolean,
+    groupCategory : string,
+    groupParticipants : GroupParticipantsGetDTO[]
+}
 
 export interface GroupGetDTO{
     groupId : number,
@@ -21,13 +32,11 @@ export interface GroupGetDTO{
     groupMessages : GroupMessagesGetDTO[]
 }
 
-export interface GroupGetSimpleDTO{
-    groupId : number,
-    nameGroup : string,
-    dateCreated : Date,
-    isDeleted : boolean,
-    groupCategory : string,
-    groupParticipants : GroupParticipantsGetDTO[]
+
+export interface ApiGroupMessagesResponse{
+    success : boolean,
+    message : string,
+    messages : GroupMessagesGetDTO[]
 }
 
 export interface GroupParticipantsGetDTO{
@@ -40,15 +49,9 @@ export interface GroupParticipantsGetDTO{
 
 }
 
-export interface GroupMessagesGetDTO{
-    messagesGroupId : number,
-    userId : number,
-    groupId : number,
-    messageText : string,
-    messageDate : Date
-}
-
-
+/**
+ * Interfaces para crear grupo, guardarlo junto con el que lo crea como participante.
+ */
 export interface GroupAddDTO{
     nameGroup :string
     groupCategory : string
@@ -58,3 +61,31 @@ export interface GroupAddDTO{
 export interface GroupParticipantsAddDTO{
     userId : number
 }
+
+
+/** INTERFACES DE MENSAJES DE GRUPO
+ * Interfaces para obtener mensajes de cada grupo
+ */
+export interface GroupMessagesGetDTO{
+    messagesGroupId : number,
+    userId : number,
+    groupId : number,
+    messageText : string,
+    messageDate : Date
+}
+
+/**
+ * Interfaces para guardar mensajes individuales en base de datos.
+ */
+export interface ApiGroupMessageResponse{
+    success : boolean,
+    message : string,
+    groupMessage : GroupMessagesGetDTO
+}
+
+export interface GroupMessageAddDTO{
+    userId : number,
+    groupId : number,
+    messageText : string
+}
+

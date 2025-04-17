@@ -115,12 +115,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
         
   }
 
-  
-
-  
-
-  
-
   obtenerGenero(numero:number):string{
     const generos = ["Masculino", "Femenino", "Otros"]
     return generos[numero] ?? "Desconocido"

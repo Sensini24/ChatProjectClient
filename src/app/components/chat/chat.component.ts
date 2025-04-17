@@ -60,37 +60,35 @@ export class ChatComponent implements OnInit {
       if (connId) {
         console.log("Connection Id actualizado: ", connId);
         this.connectionId = connId;
-        // Aquí puedes ejecutar la lógica que dependa del connectionId
       }
     });
 
     //? OBTENER LOS MENSAJES GLOBALES Y GUARDARLOS EN EL ARRYA MESSAGES
     this.signalGlobalMessageSubscription = signalMessageService.messageReceived.subscribe((message)=>{
       if(message){
-        // console.log("Mensaje publicos:", message.message, message.user, message.userId, message.connectionId, message.date)
         this.messages.push(message)
         this.privateMessageMap.set(this.nameChat, message)
-        // localStorage.setItem("iduser", message.user)
       }
     })
 
     //? OBTENER LOS MENSAJES PRIVADOR Y GUARDARLOS EN EL ARRAY
-    this.signalprivateMessageSubscription = this.signalMessageService.privateMessageReceived.subscribe((data:any)=>{
-      if (data) {
-        // console.log("Mensajes privados: ", privateMessages.message, privateMessages.user, privateMessages.userId, privateMessages.connectionId, privateMessages.date);
-        // console.log("MENSAJE RECIBIDO DE SIGNAL: ", data, this.privateMessages)
-        // if (data.userId !== this.userIdCurrent) {
-        if(this.pruebaArrayMessagesMap.length ==0){
-          this.id = 1
-        }else{
-          this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1 ].id + 1
+    this.signalprivateMessageSubscription = this.signalMessageService.privateMessageReceived.subscribe({
+      next: (data: any) => {
+        if (data.userId !== this.userIdCurrent) { 
+          if (!this.privateMessageMap.has(data.chatName)) {
+            this.privateMessageMap.set(data.chatName, []);
+          }
+          this.privateMessageMap.get(data.chatName)?.push({
+            id: data.id,
+            userId: data.userId,
+            userName: data.user,
+            messageText: data.message,
+            messageDate: data.date
+          });
+          console.log("MENSAJE RECIBIDO DE SIGNAL: ", this.privateMessageMap.get(data.chatName))
         }
-          
-          this.privateMessageMap.get(data.chatName).push({ userId:data.userId, userName: data.user, messageText: data.message, connectionId:data.connectionId, messageDate:data.date })
-          console.log("CHAT NAME: ", data.chatName)
-
       }
-    })
+    });
 
     
 
@@ -106,13 +104,6 @@ export class ChatComponent implements OnInit {
           console.log("No user data available");
         }
       });
-
-
-      // this.receivePrivateChats = this.messageService.$privateChat.subscribe((data:ApiResponseChat)=>{
-      //   console.log(`Chats de chats privado ${this.getChatName} obtenidos: `, data)
-      // })
-
-    
   }
   
   
@@ -136,41 +127,12 @@ export class ChatComponent implements OnInit {
       console.log("Usuario desconectado: ", disconections)
     })
 
-    //? SE SUSCRIBE ANTE CUALQUIER CAMBIO.
-
-    // this.receivePrivateChats = this.messageService.$privateChat.subscribe((data: any | null) => {
-    //   console.log(`Chats de chats privado ${this.getChatName()} obtenidos: `, data);
-    //   const privateMessagesServer = data?.chatDto.messages
-    //   this.privateMessages = []
-
-    //     if (privateMessagesServer) {
-    //       privateMessagesServer.forEach((element:any) => {
-    //         this.privateMessages.push(element);
-            
-    //       });
-
-    //       //? OBTENGO LOS MENSAJES DE SERVIDOR TRANSPORTADOS DESDE MESSAGE SERVICE Y LOS ALMACENO EN UN MAP PARA EVITAR CONFUSIONES.
-    //       //? Almaceno la parte del array dentro de otr array para pasarselo a la interfaz y para que lo cargue.
-    //       if(this.privateMessageMap.has(this.getChatName())){
-            
-    //         this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.getChatName());
-    //         console.log("Private messages en array prueba Map ya existe: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
-    //       }else{
-    //         this.privateMessageMap.set(this.getChatName(), privateMessagesServer)
-    //         this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.getChatName())
-    //         // this.contactName = data.chatDto.ChatParticipants
-    //         console.log("Private messages en array prueba Map: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
-    //       }
-          
-    //     }
-    // });
   }
 
   ngOnChanges(): void {
     //? EN CASO DE CAMBIO DE PARAMETROS PARA OBTENER EL CHAT CON UN NOMBRE DE CHAT
     this.privateMessages = []
     this.pruebaArrayMessagesMap = []
-    // console.log("NOMBRE DE CHAT: ", this.nameChat)
     if (this.childIdContact && this.childIdUserCurrent) {
       const chatName = this.nameChat;
       this.messageService.loadPrivateChat(chatName, 150).subscribe((data: any | null) => {
@@ -186,23 +148,17 @@ export class ChatComponent implements OnInit {
           const privateMessagesServer = data?.chatDto.messages
   
           if (privateMessagesServer) {
-            // privateMessagesServer.forEach((element:any) => {
-            //   this.privateMessages.push(element);
-              
-            // });
-  
             //? OBTENGO LOS MENSAJES DE SERVIDOR TRANSPORTADOS DESDE MESSAGE SERVICE Y LOS ALMACENO EN UN MAP PARA EVITAR CONFUSIONES.
             //? Almaceno la parte del array dentro de otr array para pasarselo a la interfaz y para que lo cargue.
             if(this.privateMessageMap.has(this.nameChat)){
-              
-              this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat);
+              // this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat);
+              this.pruebaArrayMessagesMap = privateMessagesServer
               console.log("Private messages en array prueba Map ya existe: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
             }
             //? En caso de que existan los mensaje
             else{
               this.privateMessageMap.set(this.nameChat, privateMessagesServer)
               this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat)
-              // this.contactName = data.chatDto.ChatParticipants
               console.log("Private messages en array prueba Map: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
             }
             
@@ -223,7 +179,6 @@ export class ChatComponent implements OnInit {
   
   
   arrayIds: string[] = []
-  // messageCachéModel: { userId: number, userName:string, messageText:string,  } = { userId: 0 }
   
   sendMessageInput(inputelement:HTMLInputElement){
 
@@ -247,13 +202,11 @@ export class ChatComponent implements OnInit {
       this.privateMessages.push({ id:this.id, userId:this.childIdUserCurrent, userName: this.username, messageText: this.message,   connectionId:"", messageDate:new Date()})
       console.log("nO HAY CONECCION CON EL CONTACTO, PERO SI SE ENVIAR MENSAJE AL ARRAY: ", this.pruebaArrayMessagesMap)
     }
-    // this.signalMessageService.sendMessage(this.message)
     if(this.pruebaArrayMessagesMap.length ==0){
       this.id = 1
     }else{
       this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1 ].id + 1
     }
-    //   console.log("Nuevo Id: ", this.id)
     inputelement.value = ""
     this.isTyping = true
 
@@ -265,8 +218,6 @@ export class ChatComponent implements OnInit {
   
 
   savePrivateChatMessage(id: number){
-    // this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
-    // this.nameChat = this.arrayIds.sort().join("-")
 
     const messagesChat: { UserId: number; MessageText: string }[] = [];
     const chatParticipants : {UserId:number}[] = []
@@ -287,27 +238,14 @@ export class ChatComponent implements OnInit {
     });
 
     //? Guardado de meesages en tiempo real denntro de cache.
-    // this.messageCachéModel = { userId: this.childIdUserCurrent }
-    
-    // this.messageService.addMessageToCache(this.getChatName(), { id:id, messageText: this.message, userName: this.username, userId:this.childIdUserCurrent, connectionId:"", messageDate:new Date() });
     this.messageService.addMessageToCache(this.nameChat, { id: id, userId:this.user?.userId, userName: this.user?.username, messageText: this.message, connectionId:"", messageDate:new Date() });
     
   }
 
   
   showTyping(event:Event){
-    // console.log("tipeando: ", (event.target as HTMLInputElement).value)
-
     const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
-    // console.log("this.isTyping: ", this.isTyping)
   }
-
-  // getChatName():string{
-  //   this.arrayIds = [this.childIdContact.toString(), this.childIdUserCurrent.toString()]
-  //   this.nameChat = this.arrayIds.sort().join("-")
-
-  //   return this.nameChat
-  // }
 
 
   ngOnDestroy(): void {

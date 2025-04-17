@@ -31,10 +31,11 @@ export class MessageService {
       withCredentials: true
     });
   }
-
+  // isChargedFromServer:boolean = false
   // Método para cargar los chats privados con parámetros
   loadPrivateChat(nameChat: string, filasObtener: number): Observable<any> {
-    if(this.messagesCache.has(nameChat)){
+    
+    if(this.messagesCache.has(nameChat) ){
       console.log("Mensajes obtenidos desde caché: ", this.messagesCache.get(nameChat), this.messagesCache);
       return new Observable(subscriber => {
         subscriber.next(this.messagesCache.get(nameChat));
@@ -43,6 +44,7 @@ export class MessageService {
     }
     return this.GetPrivateChat(nameChat, filasObtener).pipe(
       tap(messages => {
+        // this.isChargedFromServer = true
         this.messagesCache.set(nameChat, messages); // Almacena directamente 'messages'
         console.log("Mensajes obtenidos desde servidor: ", messages);
       })
