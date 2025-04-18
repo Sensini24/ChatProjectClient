@@ -13,6 +13,12 @@ export interface ApiGroupSimpleResponse{
     groups : GroupGetSimpleDTO[]
 }
 
+export interface ApiGroupSearchedResponse{
+    success : boolean,
+    message : string,
+    groups : GroupSearchedGetDTO[]
+}
+
 export interface GroupGetSimpleDTO{
     groupId : number,
     nameGroup : string,
@@ -30,6 +36,14 @@ export interface GroupGetDTO{
     groupCategory : string,
     groupParticipants : GroupParticipantsGetDTO[]
     groupMessages : GroupMessagesGetDTO[]
+}
+
+export interface GroupSearchedGetDTO{
+    groupId : number,
+    nameGroup : string,
+    dateCreated : Date,
+    isDeleted : boolean,
+    groupCategory : string
 }
 
 
@@ -69,6 +83,7 @@ export interface GroupParticipantsAddDTO{
 export interface GroupMessagesGetDTO{
     messagesGroupId : number,
     userId : number,
+    username: string,
     groupId : number,
     messageText : string,
     messageDate : Date

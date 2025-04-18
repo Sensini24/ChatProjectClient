@@ -11,7 +11,7 @@ import { ContactService } from '../../services/contact.service';
 import { ApiResponseAddContact, Contact, ContactAddDTO } from '../../interfaces/IContact';
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../services/group.service';
-import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO } from '../../interfaces/IGroup';
+import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
 import { GroupComponent } from '../group/group.component';
 
 @Component({
@@ -34,6 +34,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private addContactSubscription: Subscription | undefined;
   private createGroupSubscription : Subscription | undefined;
   private getGroupsByUserSubscription: Subscription | undefined;
+  private getGroupsSubscription: Subscription | undefined;
 
   user:User | undefined
 
@@ -267,6 +268,37 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.nameGroup = nameGroup;
   }
 
+  groupsFiltered:any = []
+  isSuscripted:boolean = false
+  searchNewGroups(event:Event){
+    let groupSearched = (event.target as HTMLInputElement).value
+    console.log("Grupo buscado: ",groupSearched)
+    
+
+    this.getGroupsSubscription = this.groupService.getGroups$.subscribe((data: GroupSearchedGetDTO[] | null) => {
+      if (data) {
+        let idsSinrepeticion = new Set(this.groupsForUser.map(x=>x.groupId))
+
+        this.groupsFiltered = data.map(x=>{
+          if(idsSinrepeticion.has(x.groupId)){
+            this.isSuscripted = true
+          }else{
+            this.isSuscripted = false
+          }
+
+          return {...x, isSubscript:this.isSuscripted}
+        })
+        console.log("dATA:", data, "GROUPS FOR USER: ", this.groupsForUser, "GRUPO FILTRADO: ", this.groupsFiltered, idsSinrepeticion);
+      } else {
+        console.log("No se obtuvo los grupos.");
+      }
+    });
+  }
+
+  addNewGroup(groupId:number){
+
+  }
+
 
   ngOnDestroy(): void {
     if (this.userSubscription) {
@@ -285,6 +317,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
       this.createGroupSubscription.unsubscribe();
     }
     
+    if (this.getGroupsByUserSubscription) {
+      this.getGroupsByUserSubscription.unsubscribe();
+    }
     
   }
 }

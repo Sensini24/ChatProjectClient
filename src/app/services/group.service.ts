@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, map, Observable, pipe, tap } from 'rxjs';
-import { ApiGroupMessageResponse, ApiGroupMessagesResponse, ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupMessageAddDTO, GroupMessagesGetDTO } from '../interfaces/IGroup';
+import { ApiGroupMessageResponse, ApiGroupMessagesResponse, ApiGroupResponse, ApiGroupSearchedResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupMessageAddDTO, GroupMessagesGetDTO, GroupSearchedGetDTO } from '../interfaces/IGroup';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,7 @@ import { ApiGroupMessageResponse, ApiGroupMessagesResponse, ApiGroupResponse, Ap
 export class GroupService {
 
   apiUrlCreateGroup: string = "https://localhost:7119/api/Group/createGroup"
+  apiUrlGetGroupsByUser: string = "https://localhost:7119/api/Group/getGroupsByUser"
   apiUrlGetGroups: string = "https://localhost:7119/api/Group/getGroups"
   apiUrlGetMessagesByGroup: string = "https://localhost:7119/api/Group/getMessagesByGroup"
   apiUrlAddMessagesGroup: string = "https://localhost:7119/api/Group/saveMessageGroup"
@@ -22,10 +23,14 @@ export class GroupService {
   getMessagesGroupByGroup = new BehaviorSubject<GroupMessagesGetDTO[] | null>(null);
   requestFromAddMesageGroup = new BehaviorSubject<GroupMessagesGetDTO | null>(null);
 
+  getGroupsSubject = new BehaviorSubject<GroupSearchedGetDTO[] | null>(null);
+  getGroups$ = this.getGroupsSubject.asObservable();
+
   messagesGroupCache: Map<number, any> = new Map<number, any>()
 
   constructor(private http: HttpClient) { 
-    this.GetGroupsByUser()
+    this.GetGroupsByUser();
+    this.GetGroups();
   }
 
   CreateGroup(group:GroupAddDTO):Observable<ApiGroupResponse>{
@@ -49,6 +54,7 @@ export class GroupService {
         const messageDto = {
           messagesGroupId: data.groupMessage.messagesGroupId,
           userId: data.groupMessage.userId,
+          username: data.groupMessage.username,
           groupId: data.groupMessage.groupId,
           messageText: data.groupMessage.messageText,
           messageDate: data.groupMessage.messageDate
@@ -58,8 +64,20 @@ export class GroupService {
     )
   }
 
+  GetGroups():void{
+    this.http.get<ApiGroupSearchedResponse>(this.apiUrlGetGroups,{
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    }).pipe(
+      tap(data=>{
+        console.log("Grupos recibidos: ", data.groups)
+        this.getGroupsSubject.next(data.groups)
+      })
+    ).subscribe()
+  }
+
   GetGroupsByUser(): void {
-    this.http.get<ApiGroupSimpleResponse>(this.apiUrlGetGroups, {
+    this.http.get<ApiGroupSimpleResponse>(this.apiUrlGetGroupsByUser, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
     }).pipe(
@@ -94,6 +112,7 @@ export class GroupService {
         const dataGetFiltered = api.messages?.map(message => ({
           messagesGroupId: message.messagesGroupId,
           userId: message.userId,
+          username:message.username,
           groupId: message.groupId,
           messageText: message.messageText,
           messageDate: message.messageDate

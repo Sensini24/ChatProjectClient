@@ -129,6 +129,35 @@
                     <span>Crear un nuevo grupo</span>
                 </div>
             </div>
+
+
+            <!------------------------------ BUSCADOR DE GRUPOS ------------------------------------------>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" placeholder="Únete a nuevos grupos" (input)="searchNewGroups($event)">
+                    <i class="fa-solid fa-search"></i>
+                </div>
+                    @for (group of groupsFiltered; track group.groupId) {
+                        <!-- @if (group.isSuscript) { -->
+                            <div id="sidebarOptions"  class="contextual-menu sidebar-options-contacts">
+                                    
+                                <div class="menu-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span>{{group.nameGroup}}</span>
+                                    @if(group.isSubscript==true){
+                                        <button class="demo-button">Mira tus chats</button>
+                                    }@else{
+                                        <button class="demo-button" (click)="addNewGroup(group.groupId)">Agregar Grupo</button>
+                                        
+                                    }
+                                    
+                                </div>
+                            </div>
+
+                        <!-- } -->
+                        
+                    }
+            </div>
             <!------------------------------ MODAL PARA NUEVO GRUPO ------------------------------------------>
             <div class="modal-overlay" *ngIf="isShowModalCreateGroup">
                 <div class="modal">
