@@ -19,6 +19,12 @@ export interface ApiGroupSearchedResponse{
     groups : GroupSearchedGetDTO[]
 }
 
+export interface ApiGroupParticipantsJoinResponse{
+    success : boolean,
+    message : string,
+    groupParticipant : GroupParticipantsGetDTO
+}
+
 export interface GroupGetSimpleDTO{
     groupId : number,
     nameGroup : string,
@@ -74,6 +80,12 @@ export interface GroupAddDTO{
 
 export interface GroupParticipantsAddDTO{
     userId : number
+}
+
+export interface GroupParticipantsJoinAddDTO{
+    userId: number,
+    groupId: number,
+    invitationStatus: string
 }
 
 

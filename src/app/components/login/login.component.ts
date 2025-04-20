@@ -75,6 +75,7 @@ export class LoginComponent implements OnInit{
         error:err=>{
           if (err.status === 401) {
             console.log("Credenciales incorrectas: ",  err.error); 
+            alert("Credenciales incorrectas")
           } else {
             console.log("Error inesperado:", err);
           }

@@ -11,7 +11,7 @@ import { ContactService } from '../../services/contact.service';
 import { ApiResponseAddContact, Contact, ContactAddDTO } from '../../interfaces/IContact';
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../services/group.service';
-import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
+import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupParticipantsGetDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
 import { GroupComponent } from '../group/group.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private createGroupSubscription : Subscription | undefined;
   private getGroupsByUserSubscription: Subscription | undefined;
   private getGroupsSubscription: Subscription | undefined;
-
+  private addGroupParticipantSubscription: Subscription | undefined;
   user:User | undefined
 
   
@@ -49,6 +49,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   childIdContact:number = 0
   childIdUserCurrent:number = 0
   contactCurrentName:string = ""
+
+  
 
 // CHAT PRIVADO
   isShowPrivateChatComponent:boolean = false
@@ -65,6 +67,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   // CHAT GRUPALES
   isShowGroupComponent:boolean = true
+  groupParticipantsArray:any = []
 
   user$: Observable<ApiResponse> | undefined;
   constructor(private userService: UserService,private contactsService:ContactService, private groupService:GroupService){
@@ -106,6 +109,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.getGroupsByUserSubscription = this.groupService.getGroupsByUser$.subscribe(groups=>{
       if(groups){
         this.groupsForUser = groups
+        
+        // this.groupParticipantsArray = groups.groupParticipants
         // console.log("API DATA GROUP COMPLETA: ", groups);
         console.log("Array para grupos de usuario: ", this.groupsForUser);
       }else{
@@ -266,16 +271,24 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.isShowPrivateChatComponent = true
     this.groupId = groupId;
     this.nameGroup = nameGroup;
+    const elementos = this.groupsForUser.filter(x=>x.groupId == this.groupId)
+    elementos.forEach(elem=>{
+      this.groupParticipantsArray = elem.groupParticipants
+      console.log("INTEGRANTES DE GRUPO ACTUAL: ", this.groupParticipantsArray)
+    })
+    
   }
 
   groupsFiltered:any = []
   isSuscripted:boolean = false
+  isShowGroupsSearched:boolean = false
   searchNewGroups(event:Event){
     let groupSearched = (event.target as HTMLInputElement).value
     console.log("Grupo buscado: ",groupSearched)
     
 
-    this.getGroupsSubscription = this.groupService.getGroups$.subscribe((data: GroupSearchedGetDTO[] | null) => {
+    let change = groupSearched == "" || null ? this.isShowGroupsSearched = false : this.isShowGroupsSearched = true
+    this.getGroupsSubscription = this.groupService.FindGroups(groupSearched).subscribe((data: GroupSearchedGetDTO[] | null) => {
       if (data) {
         let idsSinrepeticion = new Set(this.groupsForUser.map(x=>x.groupId))
 
@@ -296,30 +309,33 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
 
   addNewGroup(groupId:number){
+    if(groupId && this.user?.userId){
+      const newParticipant = {
+        userId: this.user.userId,
+        groupId: groupId,
+        invitationStatus: "Direct"
+      }
 
+      this.addGroupParticipantSubscription =  this.groupService.JoinGroup(newParticipant).subscribe((data:GroupParticipantsGetDTO)=>{
+        console.log("Datos de partincipante unido: ", data)
+        alert("Te uniste al grupo exitosamente")
+        this.groupService.GetGroupsByUser()
+      })
+    }else{
+      alert("No se le pudo agregar al grupo.")
+    }
   }
+
+  
 
 
   ngOnDestroy(): void {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-
-    if (this.messageSubscription) {
-      this.messageSubscription.unsubscribe();
-    }
-
-    if (this.userfindSubscription) {
-      this.userfindSubscription.unsubscribe();
-    }
-
-    if (this.createGroupSubscription) {
-      this.createGroupSubscription.unsubscribe();
-    }
-    
-    if (this.getGroupsByUserSubscription) {
-      this.getGroupsByUserSubscription.unsubscribe();
-    }
-    
+    if (this.userSubscription) this.userSubscription.unsubscribe();
+    if (this.messageSubscription) this.messageSubscription.unsubscribe();
+    if (this.userfindSubscription) this.userfindSubscription.unsubscribe();
+    if (this.createGroupSubscription) this.createGroupSubscription.unsubscribe();
+    if (this.getGroupsByUserSubscription) this.getGroupsByUserSubscription.unsubscribe();
+    if (this.getGroupsSubscription) this.getGroupsSubscription.unsubscribe();
+    if (this.addGroupParticipantSubscription) this.addGroupParticipantSubscription.unsubscribe();
   }
 }

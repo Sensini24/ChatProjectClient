@@ -17,7 +17,9 @@ import { DateShowPipe } from '../../pipes/dateshow.pipe';
 export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   @Input() groupId: number = 0;
   @Input() nameGroup: string = "";
+  @Input() groupParticipantsArray:any = []
 
+  isShowParticipant:boolean = false
   messagesGroup: any[] = []
   userCurrent: User | undefined
   userIdCurrent: number = 0
@@ -102,7 +104,7 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
    */
   ngOnChanges(): void {
     this.messagesGroupArray = []
-    if (this.nameGroup && this.groupId) {
+    if (this.nameGroup && this.groupId && this.groupParticipantsArray) {
       this.signalGroupService.JoinChatGroup(this.nameGroup);
       console.log("Nombre de grupo: ", this.nameGroup)
       // this.messagesGroupArray = this.messagesGroupMap.get(this.groupId)
@@ -167,7 +169,9 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
-  
+  showParticipants(){
+    this.isShowParticipant = !this.isShowParticipant
+  }
 
 
 

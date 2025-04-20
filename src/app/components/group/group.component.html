@@ -15,8 +15,17 @@
                 </div>
                 <!-- <div class="group-name">Pichulita Gamer</div>  -->
                 <div class="header-actions">
-                    <button class="messages-btn active">Messages</button>
-                    <button class="participants-btn">Participants</button>
+                    <!-- <button class="messages-btn active">Messages</button> -->
+                    <button [class.active]="isShowParticipant" class="participants-btn" (click)="showParticipants()">Participantes</button>
+                    <div [class.active]="isShowParticipant" id="popover" class="popover">
+                        <div class="popover-title">Información del archivo</div>
+                        <div class="popover-content">
+                            @for (item of groupParticipantsArray; track item.userId) {
+                                <p><strong>Nombre:</strong> {{item.userId}}</p>
+                            }
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="shared-files-tab">

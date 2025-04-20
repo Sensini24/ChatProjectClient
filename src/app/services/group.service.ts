@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, map, Observable, pipe, tap } from 'rxjs';
-import { ApiGroupMessageResponse, ApiGroupMessagesResponse, ApiGroupResponse, ApiGroupSearchedResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupMessageAddDTO, GroupMessagesGetDTO, GroupSearchedGetDTO } from '../interfaces/IGroup';
+import { ApiGroupMessageResponse, ApiGroupMessagesResponse, ApiGroupParticipantsJoinResponse, ApiGroupResponse, ApiGroupSearchedResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupMessageAddDTO, GroupMessagesGetDTO, GroupParticipantsGetDTO, GroupParticipantsJoinAddDTO, GroupSearchedGetDTO } from '../interfaces/IGroup';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,8 @@ export class GroupService {
   apiUrlGetGroups: string = "https://localhost:7119/api/Group/getGroups"
   apiUrlGetMessagesByGroup: string = "https://localhost:7119/api/Group/getMessagesByGroup"
   apiUrlAddMessagesGroup: string = "https://localhost:7119/api/Group/saveMessageGroup"
+  apiUrlFindGroupsByInitials:string = "https://localhost:7119/api/Group/searchGroup"
+  apiUrlAddGroupParticipants:string = "https://localhost:7119/api/Group/joinGroup"
 
   createGroupSubject = new BehaviorSubject<GroupGetDTO | null>(null);
   createGroup$ = this.createGroupSubject.asObservable();
@@ -25,6 +27,12 @@ export class GroupService {
 
   getGroupsSubject = new BehaviorSubject<GroupSearchedGetDTO[] | null>(null);
   getGroups$ = this.getGroupsSubject.asObservable();
+
+  getFoundedGroupsSubject = new BehaviorSubject<GroupSearchedGetDTO[] | null>(null);
+  getFoundedGroups$ = this.getFoundedGroupsSubject.asObservable();
+
+  getGroupParticipantSubject = new BehaviorSubject<GroupParticipantsGetDTO | null>(null);
+  getGroupParticipant$ = this.getFoundedGroupsSubject.asObservable();
 
   messagesGroupCache: Map<number, any> = new Map<number, any>()
 
@@ -64,6 +72,19 @@ export class GroupService {
     )
   }
 
+
+  JoinGroup(gpBody:GroupParticipantsJoinAddDTO):Observable<GroupParticipantsGetDTO>{
+    return this.http.post<ApiGroupParticipantsJoinResponse>(this.apiUrlAddGroupParticipants, gpBody,{
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    }).pipe(
+      map(data=> data.groupParticipant || []),
+      tap(groupParticipant=>{
+        this.getGroupParticipantSubject.next(groupParticipant)
+      })
+    )
+  }
+
   GetGroups():void{
     this.http.get<ApiGroupSearchedResponse>(this.apiUrlGetGroups,{
       headers: { 'Content-Type': 'application/json' },
@@ -86,6 +107,18 @@ export class GroupService {
         this.getGroupsByUserSubject.next(apidata.groups); 
       })
     ).subscribe(); 
+  }
+
+  FindGroups(initialsGroup:string):Observable<GroupSearchedGetDTO[]>{
+    return this.http.get<ApiGroupSearchedResponse>(this.apiUrlFindGroupsByInitials + `/${initialsGroup}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+    }).pipe(
+      map(data => data.groups || []),
+      tap(groups => {
+        this.getFoundedGroupsSubject.next(groups);
+      })
+    )
   }
 
   GetMessagesGroupByGroup(groupId:number):Observable<ApiGroupMessagesResponse>{

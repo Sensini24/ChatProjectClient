@@ -138,7 +138,7 @@
                     <i class="fa-solid fa-search"></i>
                 </div>
                     @for (group of groupsFiltered; track group.groupId) {
-                        <!-- @if (group.isSuscript) { -->
+                        @if (isShowGroupsSearched) {
                             <div id="sidebarOptions"  class="contextual-menu sidebar-options-contacts">
                                     
                                 <div class="menu-item">
@@ -154,7 +154,7 @@
                                 </div>
                             </div>
 
-                        <!-- } -->
+                        }
                         
                     }
             </div>
@@ -241,6 +241,6 @@
 
     <app-chat [hidden]="isShowPrivateChatComponent" [contactCurrentName] = "contactCurrentName" [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent" [isShowMessagesContact] = "isShowMessagesContact" [isShowPresentationChat] = "isShowPresentationChat" [nameChat] = "nameChat"  ></app-chat>
 
-    <app-group [hidden]="isShowGroupComponent" [nameGroup]="nameGroup" [groupId] = "groupId"  ></app-group>
+    <app-group [hidden]="isShowGroupComponent" [nameGroup]="nameGroup" [groupId] = "groupId"  [groupParticipantsArray] = "groupParticipantsArray"></app-group>
 </div>
 
