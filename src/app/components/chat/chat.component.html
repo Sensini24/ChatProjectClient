@@ -19,87 +19,16 @@
                     <button class="participants-btn">Participants</button>
                 </div> -->
             </div>
-            <div class="shared-files-tab">
+            <div class="shared-files-tab" (click)="showShares()">
                 <i class="fa-regular fa-folder"></i>
-                <span>Shared files</span>
+                <span >Ver Archivos</span>
             </div>
         </div>
-        <div class="chat-messages">
-            <!-- <div class="message-group">
-                <div class="message-time">Kate Johnson 11:04 AM</div>
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                    </div>
-                    <div class="message-content">
-                        <p>Hi everyone, let's start the call soon 👋</p>
-                    </div>
-                </div>
-            </div>
-            <div class="message-group">
-                <div class="message-time">Kate Johnson 11:04 AM</div>
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                    </div>
-                    <div class="message-content">
-                        <p>Recently I saw properties in a great location that I did not pay attention to before 😊</p>
-                    </div>
-                </div>
-            </div>
-            <div class="message-group">
-                <div class="message-time">Kate Smith 11:06 AM</div>
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                    </div>
-                    <div class="message-content">
-                        <p>Ooo, why don't you say something more</p>
-                    </div>
-                </div>
-            </div>
-            <div class="message-group">
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Robert">
-                    </div>
-                    <div class="message-content">
-                        <p>Robert? 👋</p>
-                    </div>
-                </div>
-            </div> -->
-            <!-- <div class="message-group">
-                <div class="message-time">You, 11:08 AM</div>
-                <div class="message outgoing">
-                    <div class="message-content">
-                        <p>He created an atmosphere of mystery 🧐</p>
-                    </div>
-                </div>
-            </div>
-            <div class="message-group">
-                <div class="message outgoing">
-                    <div class="message-content reactions">
-                        <p>😎 😎</p>
-                    </div>
-                </div>
-            </div>
-            <div class="message-group">
-                <div class="message-time">Kate Smith 11:09 AM</div>
-                <div class="message">
-                    <div class="message-avatar">
-                        <img src="/placeholder.svg?height=36&width=36" alt="Kate">
-                    </div>
-                    <div class="message-content">
-                        <p>Robert, don't be like that and say something more :) 👋</p>
-                    </div>
-                </div>
-            </div> -->
-            
-    
+        <div class="chat-messages" #chatContainer>
             @if(pruebaArrayMessagesMap.length > 0 ){
                 @for(message of pruebaArrayMessagesMap; track message.messageDate){
                     @if(message.userId === userIdCurrent){
-                        <div class="message-group">
+                        <div class="message-group" id="message-group-userCurrent">
                             <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div>
                             <div class="message outgoing">
                                 <div class="message-content">

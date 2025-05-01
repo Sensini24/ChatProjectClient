@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../../services/message.service';
 import { SignalMessageService } from '../../signalsService/signal-message.service';
@@ -22,7 +22,9 @@ export class ChatComponent implements OnInit {
   @Input() isShowPresentationChat:boolean = true
   @Input() contactCurrentName:string = ""
 
-  
+  @Output() isShowShares= new EventEmitter<boolean>();
+
+  @ViewChild('chatContainer') private chatContainer!: ElementRef;
   datos:string = "";
   isTyping:boolean = true;
   //! VERSION SERVICE
@@ -134,6 +136,9 @@ export class ChatComponent implements OnInit {
     this.privateMessages = []
     this.pruebaArrayMessagesMap = []
     if (this.childIdContact && this.childIdUserCurrent) {
+      
+      
+
       const chatName = this.nameChat;
       this.messageService.loadPrivateChat(chatName, 150).subscribe((data: any | null) => {
         console.log(`Chats de chats privado ${this.nameChat} obtenidos: `, data);
@@ -154,15 +159,23 @@ export class ChatComponent implements OnInit {
               // this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat);
               this.pruebaArrayMessagesMap = privateMessagesServer
               console.log("Private messages en array prueba Map ya existe: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
+
             }
             //? En caso de que existan los mensaje
             else{
               this.privateMessageMap.set(this.nameChat, privateMessagesServer)
               this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat)
               console.log("Private messages en array prueba Map: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
+
+              
             }
             
           }
+
+              setTimeout(() => {
+                this.scrollToBottom();
+                console.log("Scrolled después de actualizar el array de mensajes (ej: nuevo mensaje)"); // Log para confirmación
+              }, 0);
         }
         
       });
@@ -175,7 +188,15 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  
+  scrollToBottom(): void {
+    if (this.chatContainer) {
+      const element = this.chatContainer.nativeElement;
+      element.scrollTo({
+        top: element.scrollHeight,
+        // behavior: 'smooth'
+      });
+    }
+  }
   
   
   arrayIds: string[] = []
@@ -245,6 +266,13 @@ export class ChatComponent implements OnInit {
   
   showTyping(event:Event){
     const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
+  }
+
+  showShare:boolean = true
+
+  showShares(){
+    this.showShare = !this.showShare;
+    this.isShowShares.emit(this.showShare)
   }
 
 

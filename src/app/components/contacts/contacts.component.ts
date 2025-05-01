@@ -13,10 +13,11 @@ import { CommonModule } from '@angular/common';
 import { GroupService } from '../../services/group.service';
 import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupParticipantsGetDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
 import { GroupComponent } from '../group/group.component';
+import { SharesComponent } from '../shares/shares.component';
 
 @Component({
   selector: 'app-contacts',
-  imports: [ChatComponent, InitialsPipe, CommonModule, GroupComponent],
+  imports: [ChatComponent, InitialsPipe, CommonModule, GroupComponent, SharesComponent],
   templateUrl: './contacts.component.html',
   styleUrl: './contacts.component.css'
 })
@@ -125,7 +126,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     const generos = ["Masculino", "Femenino", "Otros"]
     return generos[numero] ?? "Desconocido"
   }
-
+  
   contactsFiltered:any = []
   yaestaencontactos:boolean= false
   searchNewContacts(event:Event){
@@ -198,6 +199,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.isShowGroupComponent = true;
     this.isShowPrivateChatComponent = false
     this.nameChat = this.getChatName()
+    
   }
 
 
@@ -277,6 +279,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
       console.log("INTEGRANTES DE GRUPO ACTUAL: ", this.groupParticipantsArray)
     })
     
+    
+    
   }
 
   groupsFiltered:any = []
@@ -326,6 +330,16 @@ export class ContactsComponent implements OnInit, OnDestroy {
     }
   }
 
+  hideOrShowShares:boolean = true;
+  showShares(isShowShare:boolean){
+    this.hideOrShowShares = isShowShare
+    
+  }
+
+  hideOrShowSharesGroup:boolean = true;
+  showSharesGroup(isShowShareGroup:boolean){
+    this.hideOrShowShares = isShowShareGroup
+  }
   
 
 

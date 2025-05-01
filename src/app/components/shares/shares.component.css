@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.right-sidebar {
+    width: 300px;
+    border-left: 1px solid #f0f0f0;
+    padding: 20px;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+}
+
+.group-title h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.group-title span {
+    font-size: 13px;
+    color: #999;
+}
+
+.file-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    flex: 1;
+    background-color: #f9fafc;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.stat-icon.documents {
+    background-color: #e0f7fa;
+    color: #00acc1;
+}
+
+.stat-icon.images {
+    background-color: #f1f8e9;
+    color: #7cb342;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.file-section {
+    background-color: #f9fafc;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.file-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.file-header span {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.more-options {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+}
+
+.file-types {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.file-type {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.file-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+.file-icon.documents {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.file-icon.photos {
+    background-color: #fff8e1;
+    color: #ffb300;
+}
+
+.file-icon.movies {
+    background-color: #e8f5e9;
+    color: #43a047;
+}
+
+.file-icon.other {
+    background-color: #fce4ec;
+    color: #ec407a;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.file-count {
+    font-size: 12px;
+    color: #999;
+}
+
+.file-action {
+    color: #999;
+    cursor: pointer;
+}

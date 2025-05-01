@@ -50,7 +50,7 @@
                             @if(user.yaEstaEnContactos ==false){
                                 <button class="demo-button" (click)="addNewContact(user.userId, user.username)">Agregar Contacto</button>
                             }@else{
-                                <button class="demo-button">Mira tus chats</button>
+                                <button class="demo-button">Mira tus mensajes</button>
                             }
                             
                         </div>
@@ -145,7 +145,7 @@
                                     <i class="fa-solid fa-user"></i>
                                     <span>{{group.nameGroup}}</span>
                                     @if(group.isSubscript==true){
-                                        <button class="demo-button">Mira tus chats</button>
+                                        <button class="demo-button">Mira tus mensajes</button>
                                     }@else{
                                         <button class="demo-button" (click)="addNewGroup(group.groupId)">Agregar Grupo</button>
                                         
@@ -239,8 +239,12 @@
         </div>
     </div>
 
-    <app-chat [hidden]="isShowPrivateChatComponent" [contactCurrentName] = "contactCurrentName" [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent" [isShowMessagesContact] = "isShowMessagesContact" [isShowPresentationChat] = "isShowPresentationChat" [nameChat] = "nameChat"  ></app-chat>
+    <app-chat [hidden]="isShowPrivateChatComponent" [contactCurrentName] = "contactCurrentName" [childIdContact]="childIdContact"  [childIdUserCurrent]="childIdUserCurrent" [isShowMessagesContact] = "isShowMessagesContact" [isShowPresentationChat] = "isShowPresentationChat" [nameChat] = "nameChat"  (isShowShares)="showShares($event)"></app-chat>
 
-    <app-group [hidden]="isShowGroupComponent" [nameGroup]="nameGroup" [groupId] = "groupId"  [groupParticipantsArray] = "groupParticipantsArray"></app-group>
+    <app-group [hidden]="isShowGroupComponent" [nameGroup]="nameGroup" [groupId] = "groupId"  [groupParticipantsArray] = "groupParticipantsArray" (isShowSharesGroup)="showSharesGroup($event)"></app-group>
+
+    <app-shares [hidden]="hideOrShowShares">
+
+    </app-shares>
 </div>
 

@@ -1,4 +1,4 @@
-import { Component, input, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { GroupService } from '../../services/group.service';
 import { CommonModule } from '@angular/common';
 import { SignalGroupService } from '../../signalsService/signal-group.service';
@@ -18,6 +18,7 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   @Input() groupId: number = 0;
   @Input() nameGroup: string = "";
   @Input() groupParticipantsArray:any = []
+  @Output() isShowSharesGroup= new EventEmitter<boolean>();
 
   isShowParticipant:boolean = false
   messagesGroup: any[] = []
@@ -93,7 +94,6 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
 
   }
-
   
   /**
    * Con cada cambio del nombre de grupo se activa la obtencion del cache o mensajes directos desde servidor.
@@ -174,7 +174,11 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
-
+  ShowShareGroup:boolean = true;
+  showSharesGroup(){
+    this.ShowShareGroup = !this.ShowShareGroup
+    this.isShowSharesGroup.emit(this.ShowShareGroup)
+  }
 
 
   ngOnDestroy(): void {
