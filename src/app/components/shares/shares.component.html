@@ -20,59 +20,179 @@
         </div>
     </div>
     <div class="file-section">
-        <div class="file-header">
-            <span>Tipos de archivos</span>
-            <button class="more-options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <!-- Tipo de archivo: Documentos (expandido) -->
+        <div [class.active] = "isShowFiles" class="file-type" (click)="showFiles('file')">
+            <div class="file-icon documents">
+                <i class="fa-regular fa-file-lines"></i>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Documents</div>
+                <div class="file-meta">124 files, 193MB</div>
+            </div>
+            <div class="file-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
         </div>
-        <div class="file-types">
-            <div class="file-type">
-                <div class="file-icon documents">
+        
+        <!-- Lista de documentos desplegada -->
+        <div class="file-list">
+            <div class="search-bar">
+                <i class="fa-solid fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search documents...">
+            </div>
+            
+            <div class="action-bar">
+                <div class="action-title">Recent documents</div>
+                <div class="action-buttons">
+                    <button class="action-button action-button-secondary">
+                        <i class="fa-solid fa-arrow-up-wide-short"></i> Sort
+                    </button>
+                    <button class="action-button action-button-primary">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-item-icon doc">
+                    <i class="fa-regular fa-file-word"></i>
+                </div>
+                <div class="file-item-info">
+                    <div class="file-item-name">Project_Proposal_Final_superduper.docx</div>
+                    <div class="file-item-meta">
+                        <span class="file-item-size">2.4MB</span>
+                        <span class="file-item-date">Apr 15, 2023</span>
+                    </div>
+                </div>
+                <div class="file-item-actions">
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-item-icon pdf">
+                    <i class="fa-regular fa-file-pdf"></i>
+                </div>
+                <div class="file-item-info">
+                    <div class="file-item-name">Financial_Report_Q1.pdf</div>
+                    <div class="file-item-meta">
+                        <span class="file-item-size">5.7MB</span>
+                        <span class="file-item-date">Mar 28, 2023</span>
+                    </div>
+                </div>
+                <div class="file-item-actions">
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-item-icon xls">
+                    <i class="fa-regular fa-file-excel"></i>
+                </div>
+                <div class="file-item-info">
+                    <div class="file-item-name">Budget_2023.xlsx</div>
+                    <div class="file-item-meta">
+                        <span class="file-item-size">1.8MB</span>
+                        <span class="file-item-date">Feb 12, 2023</span>
+                    </div>
+                </div>
+                <div class="file-item-actions">
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-item-icon doc">
                     <i class="fa-regular fa-file-lines"></i>
                 </div>
-                <div class="file-info">
-                    <div class="file-name">Documentos</div>
-                    <div class="file-count">124 files, 193MB</div>
+                <div class="file-item-info">
+                    <div class="file-item-name">Meeting_Notes.txt</div>
+                    <div class="file-item-meta">
+                        <span class="file-item-size">45KB</span>
+                        <span class="file-item-date">Jan 30, 2023</span>
+                    </div>
                 </div>
-                <div class="file-action">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
-            </div>
-            <div class="file-type">
-                <div class="file-icon photos">
-                    <i class="fa-regular fa-image"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">Fotos</div>
-                    <div class="file-count">53 files, 315MB</div>
-                </div>
-                <div class="file-action">
-                    <i class="fa-solid fa-chevron-right"></i>
+                <div class="file-item-actions">
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div class="file-item-action">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
                 </div>
             </div>
-            <div class="file-type">
-                <div class="file-icon movies">
-                    <i class="fa-solid fa-film"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">Películas</div>
-                    <div class="file-count">8 files, 720MB</div>
-                </div>
-                <div class="file-action">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
+        </div>
+        
+        <!-- Tipo de archivo: Fotos (colapsado) -->
+        <div [class.active] = "isShowPhotos" class="file-type" (click)="showFiles('photo')">
+            <div class="file-icon photos">
+                <i class="fa-regular fa-image"></i>
             </div>
-            <div class="file-type">
-                <div class="file-icon other">
-                    <i class="fa-regular fa-folder"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">Otros</div>
-                    <div class="file-count">89 files, 415MB</div>
-                </div>
-                <div class="file-action">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
+            <div class="file-info">
+                <div class="file-name">Photos</div>
+                <div class="file-meta">53 files, 315MB</div>
             </div>
+            <div class="file-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <!-- Lista de fotos (colapsada) -->
+        <div  class="file-list" >
+            <!-- Contenido que se mostraría al expandir -->
+        </div>
+        
+        <!-- Tipo de archivo: Películas (colapsado) -->
+        <div  [class.active] = "isShowMovies" class="file-type" (click)="showFiles('movie')">
+            <div class="file-icon movies">
+                <i class="fa-solid fa-film"></i>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Movies</div>
+                <div class="file-meta">8 files, 720MB</div>
+            </div>
+            <div class="file-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <!-- Lista de películas (colapsada) -->
+        <div class="file-list">
+            <!-- Contenido que se mostraría al expandir -->
+        </div>
+        
+        <!-- Tipo de archivo: Otros (colapsado) -->
+        <div  [class.active] = "isShowOther" class="file-type" (click)="showFiles('other')">
+            <div class="file-icon other">
+                <i class="fa-regular fa-folder"></i>
+            </div>
+            <div class="file-info">
+                <div class="file-name">Other</div>
+                <div class="file-meta">89 files, 415MB</div>
+            </div>
+            <div class="file-arrow">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+        
+        <!-- Lista de otros archivos (colapsada) -->
+        <div class="file-list">
+            <!-- Contenido que se mostraría al expandir -->
         </div>
     </div>
 </div>

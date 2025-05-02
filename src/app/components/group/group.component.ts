@@ -181,6 +181,33 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
+  isShowModalShare:boolean = false
+
+  showModalShareGroup(){
+    this.isShowModalShare = !this.isShowModalShare;
+    console.log("show modal: ", this.isShowModalShare)
+  }
+  
+  closeModalGroup(){
+    this.isShowModalShare = false
+    console.log("show modal: ", this.isShowModalShare)
+  }
+
+  findFile(fileInput: HTMLInputElement) {
+    fileInput.click();
+    
+  }
+
+  showfiles(event:any){
+    const files = event.target.files
+    // for (let index = 0; index < files.length; index++) {
+    //   const element = files[index];
+    //   console.info("Nombre de archivo: ", element.name)
+    // }
+    console.log(files)
+  }
+  
+
   ngOnDestroy(): void {
     if(this.userCurrentSubscription) this.userCurrentSubscription.unsubscribe()
     if(this.receiveGroupMessageSubscription) this.receiveGroupMessageSubscription.unsubscribe()

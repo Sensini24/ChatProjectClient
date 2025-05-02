@@ -275,6 +275,32 @@ export class ChatComponent implements OnInit {
     this.isShowShares.emit(this.showShare)
   }
 
+  isShowModalShare:boolean = false
+
+  showModalShare(){
+    this.isShowModalShare = !this.isShowModalShare;
+    console.log("show modal: ", this.isShowModalShare)
+  }
+
+  closeModal(){
+    this.isShowModalShare = false
+    console.log("show modal: ", this.isShowModalShare)
+  }
+
+  findFile(fileInput: HTMLInputElement) {
+    fileInput.click();
+    
+  }
+
+  showfiles(event:any){
+    const files = event.target.files
+    // for (let index = 0; index < files.length; index++) {
+    //   const element = files[index];
+    //   console.info("Nombre de archivo: ", element.name)
+    // }
+    console.log(files)
+  }
+
 
   ngOnDestroy(): void {
     if (this.signalGlobalMessageSubscription) {

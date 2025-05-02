@@ -6,7 +6,7 @@
             Haz click en un contacto para poder ver tus mensajes
         </h1>
     </div> -->
-    <div class="chat-container-group" style="width: 800px; height: 100vh;">
+    <div class="chat-container-group" style="width: 600px; height: 100vh;">
         <div class="chat-header" >
             <div class="chat-tabs">
                 <div class="tab active">
@@ -82,7 +82,36 @@
             <!-- #inputelement  (input)="showTyping($event)" -->
             <div class="input-actions">
                 <button class="emoji-btn"><i class="fa-regular fa-face-smile"></i></button>
-                <button class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
+                
+                <!-- Compartir archivos -->
+                <div id="uploadModal" [class.active]="isShowModalShare" class="modal-overlay">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <div class="modal-title">Upload Files</div>
+                            <!-- <button class="modal-close">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button> -->
+                        </div>
+                        <div class="modal-body">
+                            <div class="upload-area" (click)="findFile(fileInput)">
+                                <div class="upload-icon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div class="upload-text">Click to upload or drag and drop</div>
+                                <div class="upload-hint">Supports: JPG, PNG, PDF, DOC (Max 10MB)</div>
+                            </div>
+                            <input type="file" #fileInput id="fileInput" style="display: none;" (change)="showfiles($event)" multiple>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="button-modal-secondary" class="modal-btn" (click)="closeModalGroup()">Cancel</button>
+                            <button id="button-modal-primary" class="modal-btn">Upload</button>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- ===================================================-->
+                 
+                <button class="attachment-btn" (click)="showModalShareGroup()"><i class="fa-solid fa-paperclip"></i></button>
                 <button class="send-btn" (click)="sendGroupMessage(inputelement)"><i class="fa-solid fa-paper-plane" ></i></button>
             </div>
         </div>
