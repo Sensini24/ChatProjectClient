@@ -7,6 +7,8 @@ import { UserService } from '../../services/user.service';
 import { ApiResponse, User } from '../../interfaces/IUser';
 import { GroupMessagesGetDTO } from '../../interfaces/IGroup';
 import { DateShowPipe } from '../../pipes/dateshow.pipe';
+import { ShareService } from '../../services/share.service';
+import { ApiResponseFileUpload } from '../../interfaces/IShare';
 
 @Component({
   selector: 'app-group',
@@ -30,8 +32,9 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
   private receiveGroupMessageSubscription: Subscription | undefined;
   private userCurrentSubscription: Subscription | undefined;
   private sendMessageGroupSubscription: Subscription | undefined;
+  private uploadFileSubscription: Subscription | undefined;
 
-  constructor(private groupService: GroupService, private signalGroupService: SignalGroupService, private userService: UserService) {
+  constructor(private groupService: GroupService, private signalGroupService: SignalGroupService, private userService: UserService, private shareService:ShareService) {
 
   /**
    * Se suscribe al observable para obtener el ultimo mensaje obtenido que se envía con signal.
@@ -197,14 +200,27 @@ export class GroupComponent implements OnInit, OnChanges, OnDestroy {
     fileInput.click();
     
   }
-
+  filesVarios: FileList | null = null
   showfiles(event:any){
     const files = event.target.files
+    this.filesVarios = files
+    // this.filesVarios?.append('file', files)
+    
     // for (let index = 0; index < files.length; index++) {
     //   const element = files[index];
     //   console.info("Nombre de archivo: ", element.name)
     // }
-    console.log(files)
+    console.log(files, this.filesVarios)
+  }
+
+  uploadFiles(){
+    if(this.filesVarios){
+      // this.uploadFileSubscription = this.shareService.uploadFile(this.filesVarios).subscribe((apiResponse:ApiResponseFileUpload)=>{
+      //   console.log("Archivos subidos exitosamente: ", apiResponse)
+      // })
+    }else{
+      console.log("No hay archivos")
+    }
   }
   
 
