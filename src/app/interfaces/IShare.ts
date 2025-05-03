@@ -4,6 +4,6 @@ export interface ApiResponseFileUpload{
 }
 
 export interface UploadFile{
-    chatId:number,
+    nameChat:string,
     file:File
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiResponseFileUpload } from '../interfaces/IShare';
+import { ApiResponseFileUpload, UploadFile } from '../interfaces/IShare';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -16,12 +16,12 @@ export class ShareService {
 
   // uploadFile(files:FileList):Observable<ApiResponseFileUpload>{
 
-  //   // const formData = new FormData();
-  //   // for (let i = 0; i < files.length; i++) {
-  //   //   const file = files[i];
-  //   //   formData.append('files', file); // 'iles' debe coincidir con lo que espera el backendf
-  //   // }
-  //   // console.error("ARCHIVOS ANTES DE SUBIR: ", formData)
+  //   const formData = new FormData();
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     formData.append('files', file); // 'iles' debe coincidir con lo que espera el backendf
+  //   }
+  //   console.error("ARCHIVOS ANTES DE SUBIR: ", formData)
   //   return this.http.post<ApiResponseFileUpload>(this.apiUrlUploadFile, formData, {
   //     // headers: { 'Content-Type': 'multipart/form-data' },
   //     withCredentials: true,
@@ -33,5 +33,19 @@ export class ShareService {
   //   // )
     
   // }
+
+  uploadFile(formData:FormData):Observable<ApiResponseFileUpload>{
+
+    return this.http.post<ApiResponseFileUpload>(this.apiUrlUploadFile, formData, {
+      // headers: { 'Content-Type': 'multipart/form-data' },
+      withCredentials: true,
+    })
+    // .pipe(
+    //   tap(api=>{
+    //     console.log("Nombres de files subidos: ", api.fileNames)
+    //   })
+    // )
+    
+  }
 
 }

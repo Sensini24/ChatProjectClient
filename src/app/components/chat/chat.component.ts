@@ -7,6 +7,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { ApiResponse, User } from '../../interfaces/IUser';
 import { DateShowPipe } from '../../pipes/dateshow.pipe';
+import { ApiResponseFileUpload, UploadFile } from '../../interfaces/IShare';
+import { ShareService } from '../../services/share.service';
 
 @Component({
   selector: 'app-chat',
@@ -54,9 +56,9 @@ export class ChatComponent implements OnInit {
   private currentUserSubscription: Subscription | undefined;
   private signalUserDisconnectedSubscription: Subscription | undefined;
   private receivePrivateChats : Subscription | undefined;
-  
+  private uploadFileSubscription: Subscription | undefined;
 
-  constructor(private messageService:MessageService, private userService:UserService, private signalMessageService: SignalMessageService){
+  constructor(private messageService:MessageService, private userService:UserService, private signalMessageService: SignalMessageService, private shareService:ShareService){
     //?OBTENER LA CONEXION DEL USUARIO ACTUAL
     this.signalConnectionIdCurrentUser = this.signalMessageService.connectionIdShare$.subscribe((connId)=>{
       if (connId) {
@@ -154,6 +156,7 @@ export class ChatComponent implements OnInit {
   
           if (privateMessagesServer) {
             //? OBTENGO LOS MENSAJES DE SERVIDOR TRANSPORTADOS DESDE MESSAGE SERVICE Y LOS ALMACENO EN UN MAP PARA EVITAR CONFUSIONES.
+            //? PASA QUE SI OBTENGO LOS CHATS DESDE SERVICE Y LOS METO A UN ARRAY SIMPLE, ESTE CARGARA TODO TIPO DE CHAT DE CUALQUIER CONTACTO HACIA EL CONTACTO EN EL QUE ESTES AHORA MISMO.
             //? Almaceno la parte del array dentro de otr array para pasarselo a la interfaz y para que lo cargue.
             if(this.privateMessageMap.has(this.nameChat)){
               // this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat);
@@ -166,10 +169,7 @@ export class ChatComponent implements OnInit {
               this.privateMessageMap.set(this.nameChat, privateMessagesServer)
               this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat)
               console.log("Private messages en array prueba Map: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
-
-              
             }
-            
           }
 
               setTimeout(() => {
@@ -291,14 +291,32 @@ export class ChatComponent implements OnInit {
     fileInput.click();
     
   }
-
+  filesVarios: FileList | null = null
   showfiles(event:any){
+    
     const files = event.target.files
-    // for (let index = 0; index < files.length; index++) {
-    //   const element = files[index];
-    //   console.info("Nombre de archivo: ", element.name)
-    // }
-    console.log(files)
+    this.filesVarios = files
+    console.log(files, this.filesVarios)
+  }
+
+  uploadFilesChat(){
+    const nameChat = this.nameChat;
+    if(this.filesVarios){
+      const formData = new FormData();
+      
+      //! RECORRER TODOS LOS FILES PARA PODER ENVIAR UN FormData que almacene el name chat y Files
+      for (let i = 0; i < this.filesVarios.length; i++) {
+        const file = this.filesVarios[i];
+        formData.append("nameChat", nameChat)
+        formData.append("files", file)
+        console.log("datos en for: ", file, nameChat)
+      }
+      this.uploadFileSubscription = this.shareService.uploadFile(formData).subscribe((apiResponse:ApiResponseFileUpload)=>{
+        console.log("Archivos subidos exitosamente: ", apiResponse)
+      })
+    }else{
+      console.log("No hay archivos")
+    }
   }
 
 
