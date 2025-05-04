@@ -29,8 +29,9 @@
                 @for(message of pruebaArrayMessagesMap; track message.messageDate){
                     @if(message.userId === userIdCurrent){
                         <div class="message-group" id="message-group-userCurrent">
-                            <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}} </div>
-                            <div class="message outgoing">
+                            <div class="message-time">  {{message.userName}} | {{message.messageDate | date:'medium'}} </div>
+                            <div class="message outgoing" >
+                               
                                 <div class="message-content">
                                     <p>{{message.messageText}}</p>
                                 </div>
@@ -38,7 +39,7 @@
                         </div>
                     }@else {
                         <div class="message-group">
-                            <div class="message-time">{{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}}</div>
+                            <div class="message-time">{{message.userName}} | {{message.messageDate | showDateString}}, {{message.messageDate | date:'medium'}}</div>
                             <div class="message">
                                 <div class="message-avatar">
                                     <img src="/placeholder.svg?height=36&width=36" alt="Kate">
@@ -78,18 +79,46 @@
                             </button> -->
                         </div>
                         <div class="modal-body">
-                            <div class="upload-area" (click)="findFile(fileInput)">
+                            <div class="upload-area" 
+                            (click)="findFile(fileInput)" 
+                            (dragover)="onDragOver($event)"
+                            (dragleave)="onDragLeave($event)"
+                            (drop)="onDropFiles($event)"
+                            
+                            [class.active-drag]="isActiveDrag"
+                            >
                                 <div class="upload-icon">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
                                 </div>
-                                <div class="upload-text">Click to upload or drag and drop</div>
+                                <div class="upload-text">Haz click para buscar un archivo o simplemente arrastra los que quieras.</div>
                                 <div class="upload-hint">Supports: JPG, PNG, PDF, DOC (Max 10MB)</div>
                             </div>
                             <input type="file" #fileInput id="fileInput" style="display: none;" (change)="showfiles($event)" multiple>
+                            @if(arrayFiles.length===0){
+                                <span>Selecciona al menos un archivo a subir.</span>
+                            }@else {
+                                    @for (item of arrayFiles; track item.name) {
+                                    <div style="display: flex; align-items: center; justify-content: flex-start;">
+                                        <div class="file-item-icon doc">
+                                            <i class="fa-regular fa-file-word"></i>
+                                        </div>
+                                        <div class="file-item-info">
+                                            <div class="file-item-name">{{item.name}}</div>
+                                            <div class="file-item-meta">
+                                                <span class="file-item-size">2.4MB</span>
+                                                <span class="file-item-date">Apr 15, 2023</span>
+                                            </div>
+                                        </div>
+                                        <div id="delete-icon-modal" (click)="deleteFile(item.name)">
+                                            <i class="fa-solid fa-trash" ></i>
+                                        </div>
+                                    </div>
+                                    }
+                            }
                         </div>
                         <div class="modal-footer">
-                            <button id="button-modal-secondary" class="modal-btn" (click)="closeModal()">Cancel</button>
-                            <button id="button-modal-primary" class="modal-btn" (click)="uploadFilesChat()">Upload</button>
+                            <button id="button-modal-secondary" class="modal-btn" (click)="closeModal()">Cancelar</button>
+                            <button id="button-modal-primary" class="modal-btn" (click)="uploadFilesChat()">Subir</button>
                         </div>
                     </div>
                 </div>

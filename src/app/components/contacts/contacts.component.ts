@@ -333,7 +333,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   hideOrShowShares:boolean = true;
   showShares(isShowShare:boolean){
     this.hideOrShowShares = isShowShare
-    
+    console.log("shares boolean: ", isShowShare)
   }
 
   hideOrShowSharesGroup:boolean = true;

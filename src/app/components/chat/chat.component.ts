@@ -27,6 +27,7 @@ export class ChatComponent implements OnInit {
   @Output() isShowShares= new EventEmitter<boolean>();
 
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
+  
   datos:string = "";
   isTyping:boolean = true;
   //! VERSION SERVICE
@@ -275,6 +276,9 @@ export class ChatComponent implements OnInit {
     this.isShowShares.emit(this.showShare)
   }
 
+  /**
+   * CODIGO DE MODAL PARA SUBIR ARCHIVOS
+   */
   isShowModalShare:boolean = false
 
   showModalShare(){
@@ -282,35 +286,83 @@ export class ChatComponent implements OnInit {
     console.log("show modal: ", this.isShowModalShare)
   }
 
-  closeModal(){
-    this.isShowModalShare = false
-    console.log("show modal: ", this.isShowModalShare)
-  }
+  
 
   findFile(fileInput: HTMLInputElement) {
     fileInput.click();
     
   }
-  filesVarios: FileList | null = null
+
+  
+  
+  /**
+   * 
+   * OPTE POR UN ARRAY DE FILES EN VEZ DE UN FILE LIST SIMPLEMENTE POR EL FILTRADO AL ELIMINAR UN DOCUMENTO DE LA LISTA
+   * ESTO NO IMPORTA PORQUE SE ENVIA SIEMPRE UN FORMDATA CON LOS DATOS QUE ESPERA EL SERVIDOR
+   * 
+   */
+  arrayFiles:File[] = []
   showfiles(event:any){
     
     const files = event.target.files
-    this.filesVarios = files
-    console.log(files, this.filesVarios)
+    
+     
+    /**
+     * ARRAY PARA LISTAR ELEMENTOS PARA SUBIR
+     **/ 
+    this.arrayFiles = Array.from(files);
+    console.log("ARRYA CON ARCHIVOS: ", this.arrayFiles)
+    // Array.from(files).forEach((element:any) => {
+    //   console.log("Nombre de archivo en array: ", element.name)
+    // });
+
+  }
+
+  isActiveDrag:boolean = false
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isActiveDrag = true
+    console.log('Drag over', this.isActiveDrag);
+    
+    // this.isDragging = true; // Activa feedback visual
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isActiveDrag = false
+    console.log('Drag leave', this.isActiveDrag);
+    
+    // this.isDragging = true; // Activa feedback visual
+  }
+
+  onDropFiles(event:DragEvent):void{
+    event.preventDefault();
+    event.stopPropagation();
+    this.isActiveDrag = false
+    const files = event.dataTransfer?.files
+    if (files) {
+      Array.from(files).forEach(item => {
+        this.arrayFiles.push(item);
+      });
+    }
+    console.log("Archivos dejando caer: ", event.dataTransfer?.files)
   }
 
   uploadFilesChat(){
     const nameChat = this.nameChat;
-    if(this.filesVarios){
+    if(this.arrayFiles.length >0){
       const formData = new FormData();
       
       //! RECORRER TODOS LOS FILES PARA PODER ENVIAR UN FormData que almacene el name chat y Files
-      for (let i = 0; i < this.filesVarios.length; i++) {
-        const file = this.filesVarios[i];
+      for (let i = 0; i < this.arrayFiles.length; i++) {
+        const file = this.arrayFiles[i];
         formData.append("nameChat", nameChat)
         formData.append("files", file)
         console.log("datos en for: ", file, nameChat)
       }
+
       this.uploadFileSubscription = this.shareService.uploadFile(formData).subscribe((apiResponse:ApiResponseFileUpload)=>{
         console.log("Archivos subidos exitosamente: ", apiResponse)
       })
@@ -318,7 +370,23 @@ export class ChatComponent implements OnInit {
       console.log("No hay archivos")
     }
   }
+  closeModal(){
+    this.isShowModalShare = false
 
+    //? Eliminar archivos cargados en files
+    this.arrayFiles = []
+    console.log("show modal: ", this.isShowModalShare)
+  }
+
+  deleteFile(nameFile:string){
+    if (this.arrayFiles) {
+
+      this.arrayFiles = this.arrayFiles.filter(d=>d.name !== nameFile );
+
+      
+      console.log("Files editados: ", this.arrayFiles, nameFile)
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.signalGlobalMessageSubscription) {
