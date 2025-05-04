@@ -23,4 +23,8 @@ export class ShareService {
     })
   }
 
+  // getPrivateChatFiles():Observable<ApiResponseFileUpload>{
+
+  // }
+
 }
