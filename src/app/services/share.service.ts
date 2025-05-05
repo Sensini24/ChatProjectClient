@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiResponseFileUpload, UploadFile } from '../interfaces/IShare';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { ApiResponseFileUpload, ApiResponseGetFilesChat, FilePrivateChatGetDTO, UploadFile } from '../interfaces/IShare';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShareService {
-  private getPrivateChatFilesSubject = new BehaviorSubject<ApiResponseFileUpload | null>(null);
+  private getPrivateChatFilesSubject = new BehaviorSubject<FilePrivateChatGetDTO[] | null>(null);
   public getFilesPrivate$ = this.getPrivateChatFilesSubject.asObservable();
 
   apiUrlUploadFile:string = "https://localhost:7119/api/File/newFile"
@@ -23,8 +23,19 @@ export class ShareService {
     })
   }
 
-  // getPrivateChatFiles():Observable<ApiResponseFileUpload>{
-
-  // }
+  getPrivateChatFiles(nameChat:string):Observable<FilePrivateChatGetDTO[]>{
+    return this.http.get<ApiResponseGetFilesChat>(this.apiUrlGetPrivateChatFiles + `/${nameChat}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
+    }).pipe(
+      tap(api=>{
+        console.log("Respuesta de servidor para obtener files: ", api)
+      }),
+      map(api => {
+        this.getPrivateChatFilesSubject.next(api.files);
+        return api.files;
+      })
+    );
+  }
 
 }

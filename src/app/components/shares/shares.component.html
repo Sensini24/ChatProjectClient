@@ -52,29 +52,32 @@
                     </button>
                 </div>
             </div>
+            @for (item of filesPrivateChat; track item.id) {
+                <div class="file-item">
+                    <div class="file-item-icon doc">
+                        <i class="fa-regular fa-file-word"></i>
+                    </div>
+                    <div class="file-item-info">
+                        <div class="file-item-name">{{item.fileName}}</div>
+                        <div class="file-item-meta">
+                            <span class="file-item-size">{{item.fileSize}}MB</span>
+                            <span class="file-item-date">{{item.uploadDate | date:'medium'}}</span>
+                        </div>
+                    </div>
+                    <div class="file-item-actions">
+                        <div class="file-item-action">
+                            <i class="fa-solid fa-download"></i>
+                        </div>
+                        <div class="file-item-action">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </div>
+                    </div>
+                </div>
+
+            }
             
-            <div class="file-item">
-                <div class="file-item-icon doc">
-                    <i class="fa-regular fa-file-word"></i>
-                </div>
-                <div class="file-item-info">
-                    <div class="file-item-name">Project_Proposal_Final_superduper.docx</div>
-                    <div class="file-item-meta">
-                        <span class="file-item-size">2.4MB</span>
-                        <span class="file-item-date">Apr 15, 2023</span>
-                    </div>
-                </div>
-                <div class="file-item-actions">
-                    <div class="file-item-action">
-                        <i class="fa-solid fa-download"></i>
-                    </div>
-                    <div class="file-item-action">
-                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                    </div>
-                </div>
-            </div>
             
-            <div class="file-item">
+            <!-- <div class="file-item">
                 <div class="file-item-icon pdf">
                     <i class="fa-regular fa-file-pdf"></i>
                 </div>
@@ -135,7 +138,7 @@
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         
         <!-- Tipo de archivo: Fotos (colapsado) -->
