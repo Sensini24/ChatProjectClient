@@ -12,50 +12,50 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
 export class AuthService {
 
-  private connection : HubConnection | undefined;
+  private connection: HubConnection | undefined;
   userIdReceived = new Subject<number>;
   userConnected = new Subject<any>
-  userid:string = ""
-  
+  userid: string = ""
+
   constructor(private http: HttpClient) {
-    this.startConnection() 
+    this.startConnection()
   }
 
-  apiUrlRegister:string = "https://localhost:7119/api/Auth/registerUser"
-  apiUrlLogin:string = "https://localhost:7119/api/Auth/login"
+  apiUrlRegister: string = "https://localhost:7119/api/Auth/registerUser"
+  apiUrlLogin: string = "https://localhost:7119/api/Auth/login"
 
 
-  RegisterUser(userdto:UserRegister):Observable<UserRegister>{
+  RegisterUser(userdto: UserRegister): Observable<UserRegister> {
     return this.http.post<UserRegister>(this.apiUrlRegister, userdto, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     })
   }
 
-  LoginUser(logindata:UserLogin):Observable<any>{
-    return this.http.post<any>(this.apiUrlLogin, logindata,{
+  LoginUser(logindata: UserLogin): Observable<any> {
+    return this.http.post<any>(this.apiUrlLogin, logindata, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     })
   }
 
-  public startConnection =()=>{
+  public startConnection = () => {
     this.connection = new HubConnectionBuilder()
-    .withUrl("https://localhost:7119/identifyHub")
-    .withAutomaticReconnect()
-    .build();
+      .withUrl("https://localhost:7119/identifyHub")
+      .withAutomaticReconnect()
+      .build();
 
     this.connection.start()
-    .then(()=>{
-      console.log("Conexion de auth establecida")
-    })
-    .catch(err=>{
-      console.log("Error de conexion de auth: ", err)
-    })
+      .then(() => {
+        console.log("Conexion de auth establecida")
+      })
+      .catch(err => {
+        console.log("Error de conexion de auth: ", err)
+      })
 
-    this.connection.on("ReceiveUserId", (userId:string)=>{
+    this.connection.on("ReceiveUserId", (userId: string) => {
 
-      if(localStorage.getItem('userId')){
+      if (localStorage.getItem('userId')) {
         localStorage.removeItem("userId");
       }
       this.setUser(userId)
@@ -65,7 +65,7 @@ export class AuthService {
     })
 
 
-    this.connection?.on("UserConnected", (conections:any)=>{
+    this.connection?.on("UserConnected", (conections: any) => {
       this.userConnected.next(conections);
     })
 
@@ -82,5 +82,5 @@ export class AuthService {
   }
 
 
-  
+
 }

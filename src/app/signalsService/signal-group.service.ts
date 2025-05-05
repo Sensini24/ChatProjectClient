@@ -7,20 +7,20 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SignalGroupService {
 
-  private connection : HubConnection | undefined;
+  private connection: HubConnection | undefined;
 
   private messageReceivedSubject = new BehaviorSubject<any>(null)
   public messageReceived$ = this.messageReceivedSubject.asObservable()
-    
+
   constructor() {
     this.startConnection()
   }
 
-  public startConnection =()=>{
+  public startConnection = () => {
     this.connection = new HubConnectionBuilder()
-    .withUrl("https://localhost:7119/groupHub")
-    .withAutomaticReconnect()
-    .build();
+      .withUrl("https://localhost:7119/groupHub")
+      .withAutomaticReconnect()
+      .build();
 
     this.connection.start()
       .then(() => {
@@ -30,27 +30,27 @@ export class SignalGroupService {
         console.log("Error de conexion: ", err)
       });
 
-    
-    this.connection?.on("ReceiveGroupMessage", (groupName,groupId,user,userId, message)=>{
-      this.messageReceivedSubject.next({groupName,groupId,user,userId, message});
+
+    this.connection?.on("ReceiveGroupMessage", (groupName, groupId, user, userId, message) => {
+      this.messageReceivedSubject.next({ groupName, groupId, user, userId, message });
     })
   }
 
-  public JoinChatGroup=(groupName:string)=>{
-    if(this.connection){
+  public JoinChatGroup = (groupName: string) => {
+    if (this.connection) {
       this.connection?.invoke("JoinChatGroup", groupName)
-      .catch(err => console.error(err))
-    }else{
+        .catch(err => console.error(err))
+    } else {
       console.log("La conexión a grupos no fue establecida")
     }
   }
 
 
-  public SendMessageToGroup =(groupName:string, groupId:number, user:string, message:string)=>{
-    if(this.connection){
+  public SendMessageToGroup = (groupName: string, groupId: number, user: string, message: string) => {
+    if (this.connection) {
       this.connection?.invoke("SendMessageToGroup", groupName, groupId, user, message)
-      .catch(err => console.error(err))
-    }else{
+        .catch(err => console.error(err))
+    } else {
       console.log("La conexión a grupos no fue establecida")
     }
   }

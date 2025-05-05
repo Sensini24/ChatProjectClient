@@ -31,7 +31,7 @@
                         <div class="message-group" id="message-group-userCurrent">
                             <div class="message-time">  {{message.userName}} | {{message.messageDate | date:'medium'}} </div>
                             <div class="message outgoing" >
-                               
+
                                 <div class="message-content">
                                     <p>{{message.messageText}}</p>
                                 </div>
@@ -49,20 +49,20 @@
                                 </div>
                             </div>
                         </div>
-        
+
                     }
                 }
             }@else {
                 <p>No hay mensaje</p>
             }
-            
-    
+
+
             <div class="message-group" [hidden]="isTyping">
                 <div class="typing-indicator">
                     <span >{{userCurrentTipying}} is typing</span>
                 </div>
             </div>
-            
+
         </div>
         <div class="chat-input">
             <input type="text" placeholder="Write your message..." #inputelement  (input)="showTyping($event)">
@@ -79,12 +79,12 @@
                             </button> -->
                         </div>
                         <div class="modal-body">
-                            <div class="upload-area" 
-                            (click)="findFile(fileInput)" 
+                            <div class="upload-area"
+                            (click)="findFile(fileInput)"
                             (dragover)="onDragOver($event)"
                             (dragleave)="onDragLeave($event)"
                             (drop)="onDropFiles($event)"
-                            
+
                             [class.active-drag]="isActiveDrag"
                             >
                                 <div class="upload-icon">
@@ -123,7 +123,7 @@
                     </div>
                 </div>
                 <!-- ===================================================-->
-                 
+
                 <button class="attachment-btn" (click)="showModalShare()"><i class="fa-solid fa-paperclip"></i></button>
                 <button class="send-btn" (click)="sendMessageInput(inputelement)"><i class="fa-solid fa-paper-plane"></i></button>
             </div>

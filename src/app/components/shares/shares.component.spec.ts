@@ -10,7 +10,7 @@ describe('SharesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SharesComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SharesComponent);
     component = fixture.componentInstance;
