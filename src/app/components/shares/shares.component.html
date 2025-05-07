@@ -33,14 +33,14 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
-        
+
         <!-- Lista de documentos desplegada -->
         <div class="file-list">
             <div class="search-bar">
                 <i class="fa-solid fa-search search-icon"></i>
                 <input type="text" class="search-input" placeholder="Search documents...">
             </div>
-            
+
             <div class="action-bar">
                 <div class="action-title">Recent documents</div>
                 <div class="action-buttons">
@@ -55,9 +55,17 @@
             @for (item of filesPrivateChat; track item.id) {
                 <div class="file-item">
                     <div class="file-item-icon doc">
-                        <i class="fa-regular fa-file-word"></i>
+                      @if(item.fileExtension == ".jpg" || item.fileExtension == ".png"){
+                        <i class="fa-solid fa-file-image" style="color: #63E6BE;"></i>
+                      }@else if(item.fileExtension == ".pdf"){
+                        <i class="fa-solid fa-file-pdf" style="color: #dd0813;"></i>
+                      }@else if(item.fileExtension == ".doc" || item.fileExtension == ".docx" || item.fileExtension ==  ".docm" || item.fileExtension == ".dotx"){
+                        <i class="fa-solid fa-file-word" style="color: #0240ac;"></i>
+
+                      }
                     </div>
                     <div class="file-item-info">
+
                         <div class="file-item-name">{{item.fileName}}</div>
                         <div class="file-item-meta">
                             <span class="file-item-size">{{item.fileSize}}MB</span>
@@ -73,10 +81,9 @@
                         </div>
                     </div>
                 </div>
-
             }
-            
-            
+
+
             <!-- <div class="file-item">
                 <div class="file-item-icon pdf">
                     <i class="fa-regular fa-file-pdf"></i>
@@ -97,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="file-item">
                 <div class="file-item-icon xls">
                     <i class="fa-regular fa-file-excel"></i>
@@ -118,7 +125,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="file-item">
                 <div class="file-item-icon doc">
                     <i class="fa-regular fa-file-lines"></i>
@@ -140,7 +147,7 @@
                 </div>
             </div> -->
         </div>
-        
+
         <!-- Tipo de archivo: Fotos (colapsado) -->
         <div [class.active] = "isShowPhotos" class="file-type" (click)="showFiles('photo')">
             <div class="file-icon photos">
@@ -154,12 +161,12 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
-        
+
         <!-- Lista de fotos (colapsada) -->
         <div  class="file-list" >
             <!-- Contenido que se mostraría al expandir -->
         </div>
-        
+
         <!-- Tipo de archivo: Películas (colapsado) -->
         <div  [class.active] = "isShowMovies" class="file-type" (click)="showFiles('movie')">
             <div class="file-icon movies">
@@ -173,12 +180,12 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
-        
+
         <!-- Lista de películas (colapsada) -->
         <div class="file-list">
             <!-- Contenido que se mostraría al expandir -->
         </div>
-        
+
         <!-- Tipo de archivo: Otros (colapsado) -->
         <div  [class.active] = "isShowOther" class="file-type" (click)="showFiles('other')">
             <div class="file-icon other">
@@ -192,7 +199,7 @@
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
         </div>
-        
+
         <!-- Lista de otros archivos (colapsada) -->
         <div class="file-list">
             <!-- Contenido que se mostraría al expandir -->

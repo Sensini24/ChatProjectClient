@@ -10,25 +10,25 @@ export class ShareService {
   private getPrivateChatFilesSubject = new BehaviorSubject<FilePrivateChatGetDTO[] | null>(null);
   public getFilesPrivate$ = this.getPrivateChatFilesSubject.asObservable();
 
-  apiUrlUploadFile:string = "https://localhost:7119/api/File/newFile"
-  apiUrlGetPrivateChatFiles:string = "https://localhost:7119/api/File/getFilesChatPrivate"
+  apiUrlUploadFile: string = "https://localhost:7119/api/File/newFile"
+  apiUrlGetPrivateChatFiles: string = "https://localhost:7119/api/File/getFilesChatPrivate"
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
 
-  uploadFile(formData:FormData):Observable<ApiResponseFileUpload>{
+  uploadFile(formData: FormData): Observable<ApiResponseFileUpload> {
     return this.http.post<ApiResponseFileUpload>(this.apiUrlUploadFile, formData, {
       // headers: { 'Content-Type': 'multipart/form-data' },
       withCredentials: true,
     })
   }
 
-  getPrivateChatFiles(nameChat:string):Observable<FilePrivateChatGetDTO[]>{
+  getPrivateChatFiles(nameChat: string): Observable<FilePrivateChatGetDTO[]> {
     return this.http.get<ApiResponseGetFilesChat>(this.apiUrlGetPrivateChatFiles + `/${nameChat}`, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     }).pipe(
-      tap(api=>{
+      tap(api => {
         console.log("Respuesta de servidor para obtener files: ", api)
       }),
       map(api => {

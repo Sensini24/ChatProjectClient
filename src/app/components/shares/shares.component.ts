@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ShareService } from '../../services/share.service';
 import { Subscription } from 'rxjs';
 import { FilePrivateChatGetDTO } from '../../interfaces/IShare';
@@ -10,8 +10,9 @@ import { CommonModule } from '@angular/common';
   templateUrl: './shares.component.html',
   styleUrl: './shares.component.css'
 })
-export class SharesComponent implements OnChanges {
+export class SharesComponent implements OnChanges, OnInit, OnDestroy {
   @Input() nameChat: string = ""
+
 
   private getPrivateFilesChatSubscription: Subscription | undefined
 
@@ -26,16 +27,38 @@ export class SharesComponent implements OnChanges {
 
   }
 
+  ngOnInit(): void {
+    this.getPrivateFilesChatSubscription = this.shareService.getFilesPrivate$.subscribe((files: FilePrivateChatGetDTO[] | null) => {
+      this.filesPrivateChat = []
+      if (files) {
+        this.filesPrivateChat = files;
+      }
+    })
+  }
+  /*
+   * ngOnChanges(): void {
+     if (this.nameChat) {
+       this.filesPrivateChat = [];
+       console.log("NOMBRE DE CHAT DESDE SHARE: ", this.nameChat);
+       this.getPrivateFilesChatSubscription = this.shareService.getPrivateChatFiles(this.nameChat).subscribe((files: FilePrivateChatGetDTO[]) => {
+         console.log("ARCHIVOS POR CHAT PRIVADO: ", files)
+         this.filesPrivateChat = files;
+       })
+     }
+   }
+   */
+
   ngOnChanges(): void {
     if (this.nameChat) {
-      this.filesPrivateChat = [];
       console.log("NOMBRE DE CHAT DESDE SHARE: ", this.nameChat);
       this.getPrivateFilesChatSubscription = this.shareService.getPrivateChatFiles(this.nameChat).subscribe((files: FilePrivateChatGetDTO[]) => {
         console.log("ARCHIVOS POR CHAT PRIVADO: ", files)
-        this.filesPrivateChat = files;
       })
+    } else {
+      this.filesPrivateChat = []
     }
   }
+
 
   showFiles(type: string) {
     console.log("tipo de archivo: ", type)
@@ -57,6 +80,10 @@ export class SharesComponent implements OnChanges {
         break;
       }
     }
+
+  }
+
+  ngOnDestroy(): void {
 
   }
 

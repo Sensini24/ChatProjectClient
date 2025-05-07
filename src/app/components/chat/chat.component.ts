@@ -18,50 +18,50 @@ import { ShareService } from '../../services/share.service';
 })
 export class ChatComponent implements OnInit {
   @Input() childIdContact: number = 0;
-  @Input() childIdUserCurrent:number = 0
-  @Input() nameChat:string = ""
-  @Input() isShowMessagesContact:boolean = false
-  @Input() isShowPresentationChat:boolean = true
-  @Input() contactCurrentName:string = ""
+  @Input() childIdUserCurrent: number = 0
+  @Input() nameChat: string = ""
+  @Input() isShowMessagesContact: boolean = false
+  @Input() isShowPresentationChat: boolean = true
+  @Input() contactCurrentName: string = ""
 
-  @Output() isShowShares= new EventEmitter<boolean>();
+  @Output() isShowShares = new EventEmitter<boolean>();
 
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
-  
-  datos:string = "";
-  isTyping:boolean = true;
+
+  datos: string = "";
+  isTyping: boolean = true;
   //! VERSION SERVICE
-  message:string = "";
-  user:User | undefined
+  message: string = "";
+  user: User | undefined
 
-  messages: { user: string; message: string, userId:number, connectionId:string, date:Date }[] = [];
-  privateMessages :any[]  = [];
-  usersConnected:[] = []
-  privateMessageMap : Map<string,any> = new Map<string, any>()
-  pruebaArrayMessagesMap :any[]  = [];
-  
-  connectionId: string ="";
+  messages: { user: string; message: string, userId: number, connectionId: string, date: Date }[] = [];
+  privateMessages: any[] = [];
+  usersConnected: [] = []
+  privateMessageMap: Map<string, any> = new Map<string, any>()
+  pruebaArrayMessagesMap: any[] = [];
+
+  connectionId: string = "";
 
 
-  userCurrentTipying:string = "";
-  userIdCurrent:number = 0
-  username:string = ""
-  contactName:string = ""
-  id:number = 0;
+  userCurrentTipying: string = "";
+  userIdCurrent: number = 0
+  username: string = ""
+  contactName: string = ""
+  id: number = 0;
 
-  private signalConnectionIdCurrentUser : Subscription | undefined
+  private signalConnectionIdCurrentUser: Subscription | undefined
   private sendchatsSuscription: Subscription | undefined;
   private signalGlobalMessageSubscription: Subscription | undefined;
   private signalprivateMessageSubscription: Subscription | undefined;
-  private signalUserConnectedSubscription : Subscription | undefined;
+  private signalUserConnectedSubscription: Subscription | undefined;
   private currentUserSubscription: Subscription | undefined;
   private signalUserDisconnectedSubscription: Subscription | undefined;
-  private receivePrivateChats : Subscription | undefined;
+  private receivePrivateChats: Subscription | undefined;
   private uploadFileSubscription: Subscription | undefined;
 
-  constructor(private messageService:MessageService, private userService:UserService, private signalMessageService: SignalMessageService, private shareService:ShareService){
+  constructor(private messageService: MessageService, private userService: UserService, private signalMessageService: SignalMessageService, private shareService: ShareService) {
     //?OBTENER LA CONEXION DEL USUARIO ACTUAL
-    this.signalConnectionIdCurrentUser = this.signalMessageService.connectionIdShare$.subscribe((connId)=>{
+    this.signalConnectionIdCurrentUser = this.signalMessageService.connectionIdShare$.subscribe((connId) => {
       if (connId) {
         console.log("Connection Id actualizado: ", connId);
         this.connectionId = connId;
@@ -69,8 +69,8 @@ export class ChatComponent implements OnInit {
     });
 
     //? OBTENER LOS MENSAJES GLOBALES Y GUARDARLOS EN EL ARRYA MESSAGES
-    this.signalGlobalMessageSubscription = signalMessageService.messageReceived.subscribe((message)=>{
-      if(message){
+    this.signalGlobalMessageSubscription = signalMessageService.messageReceived.subscribe((message) => {
+      if (message) {
         this.messages.push(message)
         this.privateMessageMap.set(this.nameChat, message)
       }
@@ -79,7 +79,7 @@ export class ChatComponent implements OnInit {
     //? OBTENER LOS MENSAJES PRIVADOR Y GUARDARLOS EN EL ARRAY
     this.signalprivateMessageSubscription = this.signalMessageService.privateMessageReceived.subscribe({
       next: (data: any) => {
-        if (data.userId !== this.userIdCurrent) { 
+        if (data.userId !== this.userIdCurrent) {
           if (!this.privateMessageMap.has(data.chatName)) {
             this.privateMessageMap.set(data.chatName, []);
           }
@@ -95,29 +95,29 @@ export class ChatComponent implements OnInit {
       }
     });
 
-    
 
-      this.currentUserSubscription = this.userService.$userCurrent.subscribe((data: ApiResponse | null) => {
-        if (data) {
-          // console.log("Usuario obtenido: ", data)
-          // console.log("Usuario nuevo: ", this.user)
-          this.user = data.userdto
-          this.username = this.user?.username ?? "";
-          this.userIdCurrent  = this.user?.userId
-          // console.log("nombre para perfil: ", this.username);
-        } else {
-          console.log("No user data available");
-        }
-      });
+
+    this.currentUserSubscription = this.userService.$userCurrent.subscribe((data: ApiResponse | null) => {
+      if (data) {
+        // console.log("Usuario obtenido: ", data)
+        // console.log("Usuario nuevo: ", this.user)
+        this.user = data.userdto
+        this.username = this.user?.username ?? "";
+        this.userIdCurrent = this.user?.userId
+        // console.log("nombre para perfil: ", this.username);
+      } else {
+        console.log("No user data available");
+      }
+    });
   }
-  
-  
-  ngOnInit(){
-    usersConnected:[]=[]
-    
-    
-    this.signalUserConnectedSubscription = this.signalMessageService.userConnected.subscribe((connections: any)=>{
-      if(connections){
+
+
+  ngOnInit() {
+    usersConnected: [] = []
+
+
+    this.signalUserConnectedSubscription = this.signalMessageService.userConnected.subscribe((connections: any) => {
+      if (connections) {
 
         console.log("Usuario conectado: ", connections)
 
@@ -128,7 +128,7 @@ export class ChatComponent implements OnInit {
       }
     })
 
-    this.signalUserDisconnectedSubscription = this.signalMessageService.userDisconnected.subscribe((disconections:any)=>{
+    this.signalUserDisconnectedSubscription = this.signalMessageService.userDisconnected.subscribe((disconections: any) => {
       console.log("Usuario desconectado: ", disconections)
     })
 
@@ -139,51 +139,51 @@ export class ChatComponent implements OnInit {
     this.privateMessages = []
     this.pruebaArrayMessagesMap = []
     if (this.childIdContact && this.childIdUserCurrent) {
-      
-      
+
+
 
       const chatName = this.nameChat;
       this.messageService.loadPrivateChat(chatName, 150).subscribe((data: any | null) => {
         console.log(`Chats de chats privado ${this.nameChat} obtenidos: `, data);
 
         //! AQUI CUANDO NO TIENES MENSAJES, ENTONCES SE CREA EL MAP PERO CON ARRAY VACIO
-        if(data.success == false){
-          this.privateMessageMap.set(this.nameChat, [] )
+        if (data.success == false) {
+          this.privateMessageMap.set(this.nameChat, [])
           this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat)
         }
         //! AQUI EN CASO DE QUE SI HAYA MENSAJES
-        else{
+        else {
           const privateMessagesServer = data?.chatDto.messages
-  
+
           if (privateMessagesServer) {
             //? OBTENGO LOS MENSAJES DE SERVIDOR TRANSPORTADOS DESDE MESSAGE SERVICE Y LOS ALMACENO EN UN MAP PARA EVITAR CONFUSIONES.
             //? PASA QUE SI OBTENGO LOS CHATS DESDE SERVICE Y LOS METO A UN ARRAY SIMPLE, ESTE CARGARA TODO TIPO DE CHAT DE CUALQUIER CONTACTO HACIA EL CONTACTO EN EL QUE ESTES AHORA MISMO.
             //? Almaceno la parte del array dentro de otr array para pasarselo a la interfaz y para que lo cargue.
-            if(this.privateMessageMap.has(this.nameChat)){
+            if (this.privateMessageMap.has(this.nameChat)) {
               // this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat);
               this.pruebaArrayMessagesMap = privateMessagesServer
               console.log("Private messages en array prueba Map ya existe: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
 
             }
             //? En caso de que existan los mensaje
-            else{
+            else {
               this.privateMessageMap.set(this.nameChat, privateMessagesServer)
               this.pruebaArrayMessagesMap = this.privateMessageMap.get(this.nameChat)
               console.log("Private messages en array prueba Map: ", this.pruebaArrayMessagesMap, this.privateMessageMap)
             }
           }
 
-              setTimeout(() => {
-                this.scrollToBottom();
-                console.log("Scrolled después de actualizar el array de mensajes (ej: nuevo mensaje)"); // Log para confirmación
-              }, 0);
+          setTimeout(() => {
+            this.scrollToBottom();
+            console.log("Scrolled después de actualizar el array de mensajes (ej: nuevo mensaje)"); // Log para confirmación
+          }, 0);
         }
-        
+
       });
-      
+
     }
 
-    if(this.contactCurrentName){
+    if (this.contactCurrentName) {
       this.contactName = this.contactCurrentName
       console.log("NOMBRE DE CONTACTO PASADO DE PADRE: ", this.contactName)
     }
@@ -198,36 +198,36 @@ export class ChatComponent implements OnInit {
       });
     }
   }
-  
-  
+
+
   arrayIds: string[] = []
-  
-  sendMessageInput(inputelement:HTMLInputElement){
+
+  sendMessageInput(inputelement: HTMLInputElement) {
 
     //Envio de mensajes en chat en tiempo real
     this.message = inputelement.value;
     const connectionContact = this.usersConnected[this.childIdContact]?.[0]
-    if(connectionContact != null || connectionContact !== undefined){
+    if (connectionContact != null || connectionContact !== undefined) {
       this.signalMessageService.sendPrivateMessage(connectionContact, this.message, this.nameChat)
       console.log("Conexion de usuario y mensaje: ", connectionContact, this.message, this.nameChat)
     }
-    else{
-      
-      if(this.pruebaArrayMessagesMap.length ==0){
+    else {
+
+      if (this.pruebaArrayMessagesMap.length == 0) {
         this.id = 1
-      }else{
-        this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1 ].id + 1
+      } else {
+        this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1].id + 1
       }
       console.log("Nuevo Id: ", this.id)
-      this.pruebaArrayMessagesMap.push({ id:this.id, userId:this.childIdUserCurrent, userName: this.username, messageText: this.message,   connectionId:"", messageDate:new Date() })
-      
-      this.privateMessages.push({ id:this.id, userId:this.childIdUserCurrent, userName: this.username, messageText: this.message,   connectionId:"", messageDate:new Date()})
+      this.pruebaArrayMessagesMap.push({ id: this.id, userId: this.childIdUserCurrent, userName: this.username, messageText: this.message, connectionId: "", messageDate: new Date() })
+
+      this.privateMessages.push({ id: this.id, userId: this.childIdUserCurrent, userName: this.username, messageText: this.message, connectionId: "", messageDate: new Date() })
       console.log("nO HAY CONECCION CON EL CONTACTO, PERO SI SE ENVIAR MENSAJE AL ARRAY: ", this.pruebaArrayMessagesMap)
     }
-    if(this.pruebaArrayMessagesMap.length ==0){
+    if (this.pruebaArrayMessagesMap.length == 0) {
       this.id = 1
-    }else{
-      this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1 ].id + 1
+    } else {
+      this.id = this.pruebaArrayMessagesMap[this.pruebaArrayMessagesMap.length - 1].id + 1
     }
     inputelement.value = ""
     this.isTyping = true
@@ -237,41 +237,41 @@ export class ChatComponent implements OnInit {
     //? Creacion de chat, guardado de participantes y guardado de mensaje en base de datos.
     this.savePrivateChatMessage(this.id)
   }
-  
 
-  savePrivateChatMessage(id: number){
+
+  savePrivateChatMessage(id: number) {
 
     const messagesChat: { UserId: number; MessageText: string }[] = [];
-    const chatParticipants : {UserId:number}[] = []
+    const chatParticipants: { UserId: number }[] = []
 
-    messagesChat.push({UserId:this.childIdUserCurrent, MessageText:this.message})
-    chatParticipants.push({UserId:this.childIdContact})
-    chatParticipants.push({UserId:this.childIdUserCurrent})
+    messagesChat.push({ UserId: this.childIdUserCurrent, MessageText: this.message })
+    chatParticipants.push({ UserId: this.childIdContact })
+    chatParticipants.push({ UserId: this.childIdUserCurrent })
 
     const chat: Chat = {
       NameChat: this.nameChat,
-      Messages : messagesChat,
+      Messages: messagesChat,
       ChatParticipants: chatParticipants
     }
     console.log("Chat completo: ", chat)
 
-    this.sendchatsSuscription =  this.messageService.SendMessage(chat).subscribe((data:any)=>{
+    this.sendchatsSuscription = this.messageService.SendMessage(chat).subscribe((data: any) => {
       console.log("Mensaje de guardado de chats y mensajes: ", data)
     });
 
     //? Guardado de meesages en tiempo real denntro de cache.
-    this.messageService.addMessageToCache(this.nameChat, { id: id, userId:this.user?.userId, userName: this.user?.username, messageText: this.message, connectionId:"", messageDate:new Date() });
-    
+    this.messageService.addMessageToCache(this.nameChat, { id: id, userId: this.user?.userId, userName: this.user?.username, messageText: this.message, connectionId: "", messageDate: new Date() });
+
   }
 
-  
-  showTyping(event:Event){
+
+  showTyping(event: Event) {
     const change = (event.target as HTMLInputElement).value !== "" ? this.isTyping = false : this.isTyping = true
   }
 
-  showShare:boolean = true
+  showShare: boolean = true
 
-  showShares(){
+  showShares() {
     this.showShare = !this.showShare;
     this.isShowShares.emit(this.showShare)
   }
@@ -279,37 +279,37 @@ export class ChatComponent implements OnInit {
   /**
    * CODIGO DE MODAL PARA SUBIR ARCHIVOS
    */
-  isShowModalShare:boolean = false
+  isShowModalShare: boolean = false
 
-  showModalShare(){
+  showModalShare() {
     this.isShowModalShare = !this.isShowModalShare;
     console.log("show modal: ", this.isShowModalShare)
   }
 
-  
+
 
   findFile(fileInput: HTMLInputElement) {
     fileInput.click();
-    
+
   }
 
-  
-  
+
+
   /**
-   * 
+   *
    * OPTE POR UN ARRAY DE FILES EN VEZ DE UN FILE LIST SIMPLEMENTE POR EL FILTRADO AL ELIMINAR UN DOCUMENTO DE LA LISTA
    * ESTO NO IMPORTA PORQUE SE ENVIA SIEMPRE UN FORMDATA CON LOS DATOS QUE ESPERA EL SERVIDOR
-   * 
+   *
    */
-  arrayFiles:File[] = []
-  showfiles(event:any){
-    
+  arrayFiles: File[] = []
+  showfiles(event: any) {
+
     const files = event.target.files
-    
-     
+
+
     /**
      * ARRAY PARA LISTAR ELEMENTOS PARA SUBIR
-     **/ 
+     **/
     this.arrayFiles = Array.from(files);
     console.log("ARRYA CON ARCHIVOS: ", this.arrayFiles)
     // Array.from(files).forEach((element:any) => {
@@ -318,13 +318,13 @@ export class ChatComponent implements OnInit {
 
   }
 
-  isActiveDrag:boolean = false
+  isActiveDrag: boolean = false
   onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isActiveDrag = true
     console.log('Drag over', this.isActiveDrag);
-    
+
     // this.isDragging = true; // Activa feedback visual
   }
 
@@ -333,11 +333,11 @@ export class ChatComponent implements OnInit {
     event.stopPropagation();
     this.isActiveDrag = false
     console.log('Drag leave', this.isActiveDrag);
-    
+
     // this.isDragging = true; // Activa feedback visual
   }
 
-  onDropFiles(event:DragEvent):void{
+  onDropFiles(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isActiveDrag = false
@@ -350,11 +350,11 @@ export class ChatComponent implements OnInit {
     console.log("Archivos dejando caer: ", event.dataTransfer?.files)
   }
 
-  uploadFilesChat(){
+  uploadFilesChat() {
     const nameChat = this.nameChat;
-    if(this.arrayFiles.length >0){
+    if (this.arrayFiles.length > 0) {
       const formData = new FormData();
-      
+
       //! RECORRER TODOS LOS FILES PARA PODER ENVIAR UN FormData que almacene el name chat y Files
       for (let i = 0; i < this.arrayFiles.length; i++) {
         const file = this.arrayFiles[i];
@@ -363,14 +363,15 @@ export class ChatComponent implements OnInit {
         console.log("datos en for: ", file, nameChat)
       }
 
-      this.uploadFileSubscription = this.shareService.uploadFile(formData).subscribe((apiResponse:ApiResponseFileUpload)=>{
+      this.uploadFileSubscription = this.shareService.uploadFile(formData).subscribe((apiResponse: ApiResponseFileUpload) => {
         console.log("Archivos subidos exitosamente: ", apiResponse)
+        this.shareService.getPrivateChatFiles(this.nameChat).subscribe();
       })
-    }else{
+    } else {
       console.log("No hay archivos")
     }
   }
-  closeModal(){
+  closeModal() {
     this.isShowModalShare = false
 
     //? Eliminar archivos cargados en files
@@ -378,12 +379,12 @@ export class ChatComponent implements OnInit {
     console.log("show modal: ", this.isShowModalShare)
   }
 
-  deleteFile(nameFile:string){
+  deleteFile(nameFile: string) {
     if (this.arrayFiles) {
 
-      this.arrayFiles = this.arrayFiles.filter(d=>d.name !== nameFile );
+      this.arrayFiles = this.arrayFiles.filter(d => d.name !== nameFile);
 
-      
+
       console.log("Files editados: ", this.arrayFiles, nameFile)
     }
   }
@@ -401,23 +402,23 @@ export class ChatComponent implements OnInit {
       this.signalprivateMessageSubscription.unsubscribe();
     }
 
-    if(this.currentUserSubscription){
+    if (this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe()
     }
 
-    if(this.signalConnectionIdCurrentUser){
+    if (this.signalConnectionIdCurrentUser) {
       this.signalConnectionIdCurrentUser.unsubscribe()
     }
 
-    if(this.signalUserConnectedSubscription){
+    if (this.signalUserConnectedSubscription) {
       this.signalUserConnectedSubscription.unsubscribe()
     }
 
-    if(this.signalUserDisconnectedSubscription){
+    if (this.signalUserDisconnectedSubscription) {
       this.signalUserDisconnectedSubscription.unsubscribe()
     }
 
-    if(this.receivePrivateChats){
+    if (this.receivePrivateChats) {
       this.receivePrivateChats.unsubscribe()
     }
   }
