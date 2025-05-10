@@ -1,17 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatComponent } from '../chat/chat.component';
-import { catchError, map, Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
-import { ApiResponse, ApiResponseDTO, manyApiResponse, User, UserDTO } from '../../interfaces/IUser';
+import { ApiResponse, ApiResponseDTO, manyApiResponse, User } from '../../interfaces/IUser';
 import { InitialsPipe } from '../../pipes/initials.pipe';
-import { MessageService } from '../../services/message.service';
-import { ApiResponseChat } from '../../interfaces/IChat';
 import { ContactService } from '../../services/contact.service';
 import { ApiResponseAddContact, Contact, ContactAddDTO } from '../../interfaces/IContact';
 import { CommonModule } from '@angular/common';
 import { GroupService } from '../../services/group.service';
-import { ApiGroupResponse, ApiGroupSimpleResponse, GroupAddDTO, GroupGetDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupParticipantsGetDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
+import { ApiGroupResponse, GroupAddDTO, GroupGetSimpleDTO, GroupParticipantsAddDTO, GroupParticipantsGetDTO, GroupSearchedGetDTO } from '../../interfaces/IGroup';
 import { GroupComponent } from '../group/group.component';
 import { SharesComponent } from '../shares/shares.component';
 

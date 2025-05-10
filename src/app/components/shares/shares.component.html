@@ -26,8 +26,8 @@
                 <i class="fa-regular fa-file-lines"></i>
             </div>
             <div class="file-info">
-                <div class="file-name">Documents</div>
-                <div class="file-meta">124 files, 193MB</div>
+                <div class="file-name">Documentos</div>
+                <div class="file-meta">{{allCountFiles}} Documentos, {{allSizeFiles}}MB</div>
             </div>
             <div class="file-arrow">
                 <i class="fa-solid fa-chevron-right"></i>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="action-bar">
-                <div class="action-title">Recent documents</div>
+                <div class="action-title">Documentos recientes</div>
                 <div class="action-buttons">
                     <button class="action-button action-button-secondary">
                         <i class="fa-solid fa-arrow-up-wide-short"></i> Sort
@@ -53,7 +53,7 @@
                 </div>
             </div>
             @for (item of filesPrivateChat; track item.id) {
-                <div class="file-item">
+                <div class="file-item" (click)="dowloadFile(item.fileName, item.id)">
                     <div class="file-item-icon doc">
                       @if(item.fileExtension == ".jpg" || item.fileExtension == ".png"){
                         <i class="fa-solid fa-file-image" style="color: #63E6BE;"></i>
@@ -154,7 +154,7 @@
                 <i class="fa-regular fa-image"></i>
             </div>
             <div class="file-info">
-                <div class="file-name">Photos</div>
+                <div class="file-name">Fotos e imágenes</div>
                 <div class="file-meta">53 files, 315MB</div>
             </div>
             <div class="file-arrow">
@@ -173,7 +173,7 @@
                 <i class="fa-solid fa-film"></i>
             </div>
             <div class="file-info">
-                <div class="file-name">Movies</div>
+                <div class="file-name">Películas</div>
                 <div class="file-meta">8 files, 720MB</div>
             </div>
             <div class="file-arrow">
@@ -192,7 +192,7 @@
                 <i class="fa-regular fa-folder"></i>
             </div>
             <div class="file-info">
-                <div class="file-name">Other</div>
+                <div class="file-name">Otros</div>
                 <div class="file-meta">89 files, 415MB</div>
             </div>
             <div class="file-arrow">

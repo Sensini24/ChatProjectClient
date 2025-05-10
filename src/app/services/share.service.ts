@@ -11,7 +11,8 @@ export class ShareService {
   public getFilesPrivate$ = this.getPrivateChatFilesSubject.asObservable();
 
   apiUrlUploadFile: string = "https://localhost:7119/api/File/newFile"
-  apiUrlGetPrivateChatFiles: string = "https://localhost:7119/api/File/getFilesChatPrivate"
+  apiUrlGetPrivateChatFiles: string = "https://localhost:7119/api/file/getfileschatprivate"
+  apiUrlDowloadFIle: string = "https://localhost:5001/api/file/dowloadFile"
 
   constructor(private http: HttpClient) { }
 
@@ -36,6 +37,15 @@ export class ShareService {
         return api.files;
       })
     );
+  }
+
+  dowloadFile(idFile: number): Observable<any> {
+    return this.http.get(this.apiUrlDowloadFIle + `/${idFile}`, {
+      responseType: 'blob',
+      //headers: { 'Content-Type': 'application/json' },
+      //responseType: 'blob' as 'json',
+      withCredentials: true
+    })
   }
 
 }

@@ -276,9 +276,7 @@ export class ChatComponent implements OnInit {
     this.isShowShares.emit(this.showShare)
   }
 
-  /**
-   * CODIGO DE MODAL PARA SUBIR ARCHIVOS
-   */
+  /** CODIGO DE MODAL PARA SUBIR ARCHIVOS */
   isShowModalShare: boolean = false
 
   showModalShare() {
