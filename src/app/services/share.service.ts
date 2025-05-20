@@ -12,7 +12,7 @@ export class ShareService {
 
   apiUrlUploadFile: string = "https://localhost:7119/api/File/newFile"
   apiUrlGetPrivateChatFiles: string = "https://localhost:7119/api/file/getfileschatprivate"
-  apiUrlDowloadFIle: string = "https://localhost:5001/api/file/dowloadFile"
+  apiUrlDowloadFIle: string = "https://localhost:7119/api/file/dowloadFile"
 
   constructor(private http: HttpClient) { }
 
